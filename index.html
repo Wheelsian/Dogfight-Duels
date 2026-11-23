@@ -1057,22 +1057,105 @@ async importFileList(fileList) {
 panel(bodyHex, accentHex, stripeHex, style = 'rivets') {
         const key = `p_${bodyHex}_${accentHex}_${stripeHex}_${style}`;
         return this.make(key, 512, (ctx, s) => {
-          ctx.fillStyle = '#' + bodyHex.toString(16).padStart(6, '0'); ctx.fillRect(0, 0, s, s);
-          ctx.fillStyle = '#' + stripeHex.toString(16).padStart(6, '0');
+          const bodyCol = '#' + bodyHex.toString(16).padStart(6, '0');
+          const accentCol = '#' + accentHex.toString(16).padStart(6, '0');
+          const stripeCol = '#' + stripeHex.toString(16).padStart(6, '0');
+          ctx.fillStyle = bodyCol;
+          ctx.fillRect(0, 0, s, s);
+
           if (style === 'hazard') {
+            ctx.fillStyle = stripeCol;
             for (let i = -s; i < s * 2; i += 64) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + 32, 0); ctx.lineTo(i + 110, 96); ctx.lineTo(i + 78, 96); ctx.fill(); }
-          } else {
+          } else if (style === 'rivets') {
+            ctx.fillStyle = stripeCol;
             ctx.fillRect(0, s * 0.44, s, s * 0.11);
-            ctx.fillStyle = '#' + accentHex.toString(16).padStart(6, '0'); ctx.fillRect(0, s * 0.41, s, 8); ctx.fillRect(0, s * 0.56, s, 8);
+            ctx.fillStyle = accentCol;
+            ctx.fillRect(0, s * 0.41, s, 8);
+            ctx.fillRect(0, s * 0.56, s, 8);
+          } else if (style === 'factory') {
+            // Brushed metallic sheen + clean dual-tone racing chevrons
+            const sheen = ctx.createLinearGradient(0, 0, s, s);
+            sheen.addColorStop(0, 'rgba(255,255,255,0.14)');
+            sheen.addColorStop(0.5, 'rgba(255,255,255,0.0)');
+            sheen.addColorStop(1, 'rgba(0,0,0,0.14)');
+            ctx.fillStyle = sheen;
+            ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = stripeCol;
+            for (let x = 0; x < s; x += 128) {
+              ctx.beginPath();
+              ctx.moveTo(x + 18, s * 0.36); ctx.lineTo(x + 64, s * 0.24); ctx.lineTo(x + 110, s * 0.36);
+              ctx.lineTo(x + 110, s * 0.43); ctx.lineTo(x + 64, s * 0.31); ctx.lineTo(x + 18, s * 0.43);
+              ctx.closePath(); ctx.fill();
+            }
+          } else if (style === 'oceanic') {
+            // Layered cresting ocean waves + coral speed fins & seafoam bubbles
+            ctx.fillStyle = accentCol;
+            ctx.beginPath(); ctx.moveTo(0, s * 0.58);
+            for (let x = 0; x <= s; x += 16) ctx.lineTo(x, s * 0.52 + Math.sin((x / s) * Math.PI * 4) * 26);
+            ctx.lineTo(s, s); ctx.lineTo(0, s); ctx.closePath(); ctx.fill();
+
+            ctx.strokeStyle = stripeCol; ctx.lineWidth = 10;
+            ctx.beginPath();
+            for (let x = 0; x <= s; x += 16) {
+              const wy = s * 0.47 + Math.sin((x / s) * Math.PI * 4) * 26;
+              if (x === 0) ctx.moveTo(x, wy); else ctx.lineTo(x, wy);
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = 'rgba(255,255,255,0.32)';
+            for (let i = 0; i < 24; i++) {
+              const bx = ((i * 73) % s), by = s * 0.62 + ((i * 41) % (s * 0.32));
+              ctx.beginPath(); ctx.arc(bx, by, 3 + (i % 4) * 1.6, 0, Math.PI * 2); ctx.fill();
+            }
+          } else if (style === 'nebula') {
+            // Cosmic plasma ribbons + glowing starfield & constellation nodes
+            const neb = ctx.createRadialGradient(s * 0.35, s * 0.45, 18, s * 0.5, s * 0.5, s * 0.65);
+            neb.addColorStop(0, 'rgba(255,75,216,0.45)');
+            neb.addColorStop(0.55, 'rgba(62,224,255,0.22)');
+            neb.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = neb; ctx.fillRect(0, 0, s, s);
+
+            ctx.strokeStyle = stripeCol; ctx.lineWidth = 5;
+            for (let k = 0; k < 2; k++) {
+              ctx.beginPath();
+              for (let x = 0; x <= s; x += 16) {
+                const ny = s * (0.34 + k * 0.28) + Math.sin((x / s) * Math.PI * 2 + k * 2.1) * 34;
+                if (x === 0) ctx.moveTo(x, ny); else ctx.lineTo(x, ny);
+              }
+              ctx.stroke();
+            }
+            for (let i = 0; i < 42; i++) {
+              const sx = (i * 97 + 23) % s, sy = (i * 137 + 51) % s;
+              ctx.fillStyle = i % 3 === 0 ? accentCol : '#ffffff';
+              ctx.beginPath(); ctx.arc(sx, sy, i % 5 === 0 ? 3.4 : 1.7, 0, Math.PI * 2); ctx.fill();
+            }
+          } else if (style === 'ivory') {
+            // Royal gold & crimson filigree pinstripes + heraldic diamond crests
+            ctx.strokeStyle = stripeCol; ctx.lineWidth = 8;
+            ctx.strokeRect(18, 18, s - 36, s - 36);
+            ctx.strokeStyle = accentCol; ctx.lineWidth = 4;
+            ctx.strokeRect(30, 30, s - 60, s - 60);
+
+            for (let gx = 128; gx < s; gx += 128) {
+              for (let gy = 128; gy < s; gy += 128) {
+                ctx.fillStyle = stripeCol;
+                ctx.beginPath(); ctx.moveTo(gx, gy - 26); ctx.lineTo(gx + 22, gy); ctx.lineTo(gx, gy + 26); ctx.lineTo(gx - 22, gy); ctx.closePath(); ctx.fill();
+                ctx.fillStyle = accentCol;
+                ctx.beginPath(); ctx.moveTo(gx, gy - 14); ctx.lineTo(gx + 12, gy); ctx.lineTo(gx, gy + 14); ctx.lineTo(gx - 12, gy); ctx.closePath(); ctx.fill();
+              }
+            }
           }
+
           const gr = ctx.createLinearGradient(0, s * 0.78, 0, s);
           gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(15,15,20,0.22)');
           ctx.fillStyle = gr; ctx.fillRect(0, s * 0.78, s, s * 0.22);
           ctx.strokeStyle = 'rgba(17,19,26,0.26)'; ctx.lineWidth = 2.5;
           for (let x = 0; x <= s; x += 128) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, s); ctx.stroke(); }
           for (let y = 0; y <= s; y += 128) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(s, y); ctx.stroke(); }
-          ctx.fillStyle = 'rgba(255,255,255,0.24)';
-          for (let x = 16; x < s; x += 64) for (let y = 16; y < s; y += 64) { ctx.beginPath(); ctx.arc(x, y, 2.2, 0, Math.PI * 2); ctx.fill(); }
+          if (style === 'rivets' || style === 'hazard' || style === 'factory') {
+            ctx.fillStyle = 'rgba(255,255,255,0.24)';
+            for (let x = 16; x < s; x += 64) for (let y = 16; y < s; y += 64) { ctx.beginPath(); ctx.arc(x, y, 2.2, 0, Math.PI * 2); ctx.fill(); }
+          }
         });
       },
       world(kind) {
@@ -1648,7 +1731,8 @@ panel(bodyHex, accentHex, stripeHex, style = 'rivets') {
     // Sculpted 6-Archetype Plane Builder (Lathe fuselages, beveled swept wings, procedural CanvasTextures, open-top framed windscreen)
     function createCartoonPlane(planeType, livery, hatId = 'none', colorId = 'ink', auraId = 'none', skinId = 'default') {
       const root = new THREE.Group();
-      const pat = skinId === 'hazard' ? 'hazard' : 'rivets';
+            const patMap = { sunburst: 'rivets', hazard: 'hazard', default: 'factory', oceanic: 'oceanic', nebula: 'nebula', ivory: 'ivory' };
+      const pat = patMap[skinId] || 'factory';
       const panelTex = TexLib.panel(livery.body, livery.accent, livery.stripe, pat);
       const bodyMat = getToonMaterial(livery.body, { map: panelTex });
       const accentMat = getToonMaterial(livery.accent), stripeMat = getToonMaterial(livery.stripe), coneMat = getToonMaterial(livery.cone), metalMat = getToonMaterial(0x353b4a);
