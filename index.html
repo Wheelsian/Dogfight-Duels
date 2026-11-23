@@ -1073,22 +1073,27 @@ panel(bodyHex, accentHex, stripeHex, style = 'rivets') {
             ctx.fillRect(0, s * 0.41, s, 8);
             ctx.fillRect(0, s * 0.56, s, 8);
           } else if (style === 'factory') {
-            // Brushed metallic sheen + clean dual-tone racing chevrons
-            const sheen = ctx.createLinearGradient(0, 0, s, s);
-            sheen.addColorStop(0, 'rgba(255,255,255,0.14)');
-            sheen.addColorStop(0.5, 'rgba(255,255,255,0.0)');
-            sheen.addColorStop(1, 'rgba(0,0,0,0.14)');
+            // Sleek brushed-metal sheen + tapered dual racing stripes (clean on both hull & swept wings)
+            const sheen = ctx.createLinearGradient(0, 0, 0, s);
+            sheen.addColorStop(0, 'rgba(255,255,255,0.18)');
+            sheen.addColorStop(0.45, 'rgba(255,255,255,0.02)');
+            sheen.addColorStop(1, 'rgba(0,0,0,0.18)');
             ctx.fillStyle = sheen;
             ctx.fillRect(0, 0, s, s);
+
+            // Primary accent & stripe bands along the fuselage/wing chord
+            ctx.fillStyle = accentCol;
+            ctx.fillRect(0, s * 0.20, s, 14);
+            ctx.fillRect(0, s * 0.74, s, 14);
             ctx.fillStyle = stripeCol;
-            for (let x = 0; x < s; x += 128) {
-              ctx.beginPath();
-              ctx.moveTo(x + 18, s * 0.36); ctx.lineTo(x + 64, s * 0.24); ctx.lineTo(x + 110, s * 0.36);
-              ctx.lineTo(x + 110, s * 0.43); ctx.lineTo(x + 64, s * 0.31); ctx.lineTo(x + 18, s * 0.43);
-              ctx.closePath(); ctx.fill();
-            }
+            ctx.fillRect(0, s * 0.23, s, 8);
+            ctx.fillRect(0, s * 0.77, s, 8);
+
+            // Subtle dark anti-glare nose/leading-edge trim
+            ctx.fillStyle = 'rgba(17,19,26,0.22)';
+            ctx.fillRect(0, 0, s, 26);
           } else if (style === 'oceanic') {
-            // Layered cresting ocean waves + coral speed fins & seafoam bubbles
+// Layered cresting ocean waves + coral speed fins & seafoam bubbles
             ctx.fillStyle = accentCol;
             ctx.beginPath(); ctx.moveTo(0, s * 0.58);
             for (let x = 0; x <= s; x += 16) ctx.lineTo(x, s * 0.52 + Math.sin((x / s) * Math.PI * 4) * 26);
@@ -1814,17 +1819,39 @@ root.add(hStab, hStabL);
         canopyGroup.position.set(0, 1.45, -1.1); root.add(canopyGroup);
 
       } else if (planeType === 'razordart') {
-        // 3. RAZOR-DART: Needle-nose Lathe jet + forward-swept beveled wings + twin canted fins!
-        const fuse = new THREE.Mesh(makeLatheBody([[0.03, -6.8], [0.65, -4.5], [1.28, -1.6], [1.42, 1.2], [1.05, 4.2]]), bodyMat);
+        // 3. RAZOR-DART: Sharp radome needle nose, chin intakes, forward-swept wings & twin thruster nozzles
+        const fuse = new THREE.Mesh(makeLatheBody([[0.0, -5.8], [0.52, -4.4], [1.18, -2.0], [1.38, 0.8], [1.12, 3.8], [0.85, 4.4]]), bodyMat);
         fuse.castShadow = true; addInkOutline(fuse, 0.13); root.add(fuse);
-        addPairWings(6.6, 3.3, 1.5, -2.2, -0.1, 0.9, 0.85); // Forward-swept!
+
+        // Pointed radome nose cone + pitot probe
+const radome = new THREE.Mesh(new THREE.ConeGeometry(0.92, 2.5, 18).rotateX(-Math.PI * 0.5), coneMat);
+        radome.position.set(0, 0, -5.55); addInkOutline(radome, 0.11); root.add(radome);
+        const spine = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.45, 4.4), accentMat);
+        spine.position.set(0, 1.18, 1.8); addInkOutline(spine, 0.06); root.add(spine);
+
+        addPairWings(6.7, 3.4, 1.4, -2.1, -0.05, 0.95, 0.9);
         for (const sx of [-1, 1]) {
-         const canard = new THREE.Mesh(makeSweptWingGeo(2.0, 1.1, 0.5, -0.4, 0.16, 0, sx), stripeMat); canard.position.set(sx * 0.7, 0.1, -3.2); root.add(canard);
-          const fin = new THREE.Mesh(makeBevelFinGeo(2.3, 1.8, 0.8, 0.9), accentMat); fin.position.set(sx * 1.1, 0.5, 3.4); fin.rotation.z = -sx * 0.42; addInkOutline(fin, 0.09); root.add(fin);
-          const fl = new THREE.Mesh(new THREE.ConeGeometry(0.6, 3.2, 8), new THREE.MeshBasicMaterial({ color: 0x3ee0ff })); fl.rotation.x = Math.PI * 0.5; fl.position.set(sx * 0.55, 0, 5.4); root.add(fl); exhaustFlames.push(fl);
-          muzzlePositions.push(new THREE.Vector3(sx * 1.9, -0.25, -2.8));
+          // Swept canards
+          const canard = new THREE.Mesh(makeSweptWingGeo(2.1, 1.15, 0.45, -0.45, 0.15, 0, sx), stripeMat);
+          canard.position.set(sx * 0.65, 0.08, -3.4); addInkOutline(canard, 0.06); root.add(canard);
+
+          // Side supersonic air intakes + dark intake mouths
+          const intake = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.95, 3.2), accentMat);
+          intake.position.set(sx * 1.28, -0.22, -0.8); addInkOutline(intake, 0.07); root.add(intake);
+          const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.78, 0.2), metalMat);
+          mouth.position.set(sx * 1.28, -0.22, -2.42); root.add(mouth);
+
+          // Twin canted V-tails + twin afterburner nozzles
+          const fin = new THREE.Mesh(makeBevelFinGeo(2.4, 1.85, 0.75, 0.95), accentMat);
+          fin.position.set(sx * 0.95, 0.55, 3.3); fin.rotation.z = -sx * 0.44; addInkOutline(fin, 0.09); root.add(fin);
+          const noz = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.58, 0.9, 12).rotateX(Math.PI * 0.5), metalMat);
+          noz.position.set(sx * 0.52, 0, 4.55); addInkOutline(noz, 0.06); root.add(noz);
+
+          const fl = new THREE.Mesh(new THREE.ConeGeometry(0.46, 3.1, 8), new THREE.MeshBasicMaterial({ color: 0x3ee0ff }));
+          fl.rotation.x = Math.PI * 0.5; fl.position.set(sx * 0.52, 0, 5.8); root.add(fl); exhaustFlames.push(fl);
+          muzzlePositions.push(new THREE.Vector3(sx * 1.8, -0.25, -2.8));
         }
-        canopyGroup.position.set(0, 1.15, -1.1); root.add(canopyGroup);
+        canopyGroup.position.set(0, 1.12, -1.15); root.add(canopyGroup);
 
       } else if (planeType === 'firebrand') {
         const pod = new THREE.Mesh(makeLatheBody([[0.05, -4.8], [1.1, -3.5], [1.45, -0.8], [1.25, 2.2], [0.4, 3.4]]), bodyMat); pod.castShadow = true; addInkOutline(pod, 0.14); root.add(pod);
@@ -1841,33 +1868,87 @@ root.add(hStab, hStabL);
         canopyGroup.position.set(0, 1.05, -0.7); root.add(canopyGroup);
 
       } else if (planeType === 'turboswift') {
-        const body = new THREE.Mesh(makeLatheBody([[0.04, -6.4], [0.85, -4.2], [1.28, -1.0], [1.32, 2.4], [0.95, 4.4]]), bodyMat); body.castShadow = true; addInkOutline(body, 0.13); root.add(body);
-        addPairWings(6.8, 3.4, 1.5, 2.1, -0.15, 0.3, 0.65);
+        // 5. TURBO-SWIFT: Sleek interceptor nose cone, dorsal spine, wingtip missiles & twin jet nozzles
+        const body = new THREE.Mesh(makeLatheBody([[0.0, -5.4], [0.72, -3.9], [1.26, -1.1], [1.32, 2.2], [0.96, 4.2]]), bodyMat);
+        body.castShadow = true; addInkOutline(body, 0.13); root.add(body);
+
+        // Sharp interceptor nose cone + dorsal spine
+  const noseCone = new THREE.Mesh(new THREE.ConeGeometry(0.98, 2.5, 18).rotateX(-Math.PI * 0.5), coneMat);
+        noseCone.position.set(0, 0, -5.35); addInkOutline(noseCone, 0.11); root.add(noseCone);
+        const dorsal = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.52, 4.6), stripeMat);
+        dorsal.position.set(0, 1.15, 1.5); addInkOutline(dorsal, 0.06); root.add(dorsal);
+
+        addPairWings(6.8, 3.4, 1.5, 2.0, -0.1, 0.25, 0.72);
         for (const sx of [-1, 1]) {
-          const fin = new THREE.Mesh(makeBevelFinGeo(2.3, 1.8, 0.8, 0.7), accentMat); fin.position.set(sx * 1.15, 0.6, 3.4); fin.rotation.z = -sx * 0.38; addInkOutline(fin, 0.09); root.add(fin);
-          const fl = new THREE.Mesh(new THREE.ConeGeometry(0.62, 3.0, 8), new THREE.MeshBasicMaterial({ color: 0x3ee0ff })); fl.rotation.x = Math.PI * 0.5; fl.position.set(sx * 0.75, 0.05, 5.5); root.add(fl); exhaustFlames.push(fl);
+          // Cheek air intakes
+          const cheek = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.85, 2.8), accentMat);
+          cheek.position.set(sx * 1.24, -0.18, -1.4); addInkOutline(cheek, 0.07); root.add(cheek);
+
+          // Wingtip missile rails
+          const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 2.4, 8).rotateX(Math.PI * 0.5), metalMat);
+          rail.position.set(sx * 7.25, 0.35, 2.1); addInkOutline(rail, 0.05); root.add(rail);
+
+          // Twin canted fins + exhaust nozzles
+          const fin = new THREE.Mesh(makeBevelFinGeo(2.35, 1.85, 0.8, 0.75), accentMat);
+          fin.position.set(sx * 1.0, 0.6, 3.3); fin.rotation.z = -sx * 0.36; addInkOutline(fin, 0.09); root.add(fin);
+          const noz = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.62, 0.95, 12).rotateX(Math.PI * 0.5), metalMat);
+          noz.position.set(sx * 0.65, 0.02, 4.45); addInkOutline(noz, 0.06); root.add(noz);
+
+          const fl = new THREE.Mesh(new THREE.ConeGeometry(0.5, 3.0, 8), new THREE.MeshBasicMaterial({ color: 0x3ee0ff }));
+          fl.rotation.x = Math.PI * 0.5; fl.position.set(sx * 0.65, 0.02, 5.7); root.add(fl); exhaustFlames.push(fl);
           muzzlePositions.push(new THREE.Vector3(sx * 2.2, -0.35, -2.5));
         }
         const hs = new THREE.Mesh(makeSweptWingGeo(3.0, 1.5, 0.7, 0.8, 0.2, 0, 1), accentMat); hs.position.set(0, 0.1, 3.5);
-const hsL = new THREE.Mesh(makeSweptWingGeo(3.0, 1.5, 0.7, 0.8, 0.2, 0, -1), accentMat); hsL.position.set(0, 0.1, 3.5);
-root.add(hs, hsL);
+        const hsL = new THREE.Mesh(makeSweptWingGeo(3.0, 1.5, 0.7, 0.8, 0.2, 0, -1), accentMat); hsL.position.set(0, 0.1, 3.5);
+        root.add(hs, hsL);
         canopyGroup.position.set(0, 1.08, -1.2); root.add(canopyGroup);
 
       } else {
-        const fuse = new THREE.Mesh(makeLatheBody([[1.35, -3.9], [1.68, -2.8], [1.58, 0.4], [0.95, 3.5], [0.45, 4.5]]), bodyMat); fuse.castShadow = true; addInkOutline(fuse, 0.14); root.add(fuse);
-        const fProp = addProp(0, 0, -4.15, 3.15, 4); root.add(fProp); propellers.push(fProp);
-        addPairWings(6.9, 3.5, 2.1, 0.3, -0.45, -0.7, 0.35);
+        // 6. GROUND-STRIKER: Heavy radial-engine attacker with armored cowling ring, exhaust stacks, wing cannons & ordnance
+        const fuse = new THREE.Mesh(makeLatheBody([[1.25, -3.8], [1.65, -2.6], [1.58, 0.4], [0.95, 3.5], [0.45, 4.5]]), bodyMat);
+        fuse.castShadow = true; addInkOutline(fuse, 0.14); root.add(fuse);
+
+        // Armored radial cowling ring + dark engine grille so the front isn't a flat yellow disc
+        const cowl = new THREE.Mesh(new THREE.TorusGeometry(1.32, 0.34, 10, 20), accentMat);
+        cowl.position.set(0, 0, -3.72); addInkOutline(cowl, 0.09); root.add(cowl);
+        const grille = new THREE.Mesh(new THREE.CylinderGeometry(1.18, 1.18, 0.2, 16).rotateX(Math.PI * 0.5), metalMat);
+        grille.position.set(0, 0, -3.75); root.add(grille);
+
+        // Dorsal radio mast behind cockpit
+        const mast = new THREE.Mesh(new THREE.BoxGeometry(0.16, 1.35, 0.45), accentMat);
+        mast.position.set(0, 1.65, 1.75); mast.rotation.x = -0.25; addInkOutline(mast, 0.05); root.add(mast);
+
+        const fProp = addProp(0, 0, -4.2, 3.2, 4); root.add(fProp); propellers.push(fProp);
+        addPairWings(6.9, 3.5, 2.1, 0.3, -0.45, -0.7, 0.38);
+
         const spatGeo = makeLatheBody([[0.05, -1.3], [0.68, -0.5], [0.58, 0.8], [0.1, 1.5]]);
         for (const sx of [-1, 1]) {
+          // Side engine exhaust pipes
+          const exPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.24, 1.8, 8).rotateX(Math.PI * 0.5), metalMat);
+          exPipe.position.set(sx * 1.62, -0.35, -2.5); exPipe.rotation.y = sx * 0.18; addInkOutline(exPipe, 0.05); root.add(exPipe);
+
+          // Wheel spats + struts
           const spat = new THREE.Mesh(spatGeo, accentMat); spat.position.set(sx * 2.5, -1.9, -1.5); addInkOutline(spat, 0.08); root.add(spat);
           const strut = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1.35, 0.55), metalMat); strut.position.set(sx * 2.5, -1.25, -1.5); root.add(strut);
-          const pod = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 2.6, 8).rotateX(Math.PI * 0.5), metalMat); pod.position.set(sx * 4.4, -0.95, -1.8); addInkOutline(pod, 0.07); root.add(pod);
-          muzzlePositions.push(new THREE.Vector3(sx * 4.4, -0.95, -3.2));
+
+          // Twin heavy autocannon barrels + ammo drum pods
+          const pod = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.58, 2.2), accentMat);
+          pod.position.set(sx * 4.4, -0.88, -1.3); addInkOutline(pod, 0.07); root.add(pod);
+          const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 2.4, 8).rotateX(Math.PI * 0.5), metalMat);
+          barrel.position.set(sx * 4.4, -0.88, -2.85); addInkOutline(barrel, 0.05); root.add(barrel);
+
+          // Under-wing bunker rocket
+          const rkt = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 2.1, 8).rotateX(Math.PI * 0.5), stripeMat);
+          rkt.position.set(sx * 5.6, -0.85, -1.1); addInkOutline(rkt, 0.05); root.add(rkt);
+          const rktTip = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.65, 8).rotateX(-Math.PI * 0.5), coneMat);
+          rktTip.position.set(sx * 5.6, -0.85, -2.45); root.add(rktTip);
+
+          muzzlePositions.push(new THREE.Vector3(sx * 4.4, -0.88, -4.0));
         }
         const fin = new THREE.Mesh(makeBevelFinGeo(2.5, 2.0, 0.9, 0.7), bodyMat); fin.position.set(0, 0.5, 3.2); addInkOutline(fin, 0.1); root.add(fin);
         const hs = new THREE.Mesh(makeSweptWingGeo(2.8, 1.6, 0.8, 0.5, 0.22, 0, 1), bodyMat); hs.position.set(0, 0.15, 3.3);
-const hsL = new THREE.Mesh(makeSweptWingGeo(2.8, 1.6, 0.8, 0.5, 0.22, 0, -1), bodyMat); hsL.position.set(0, 0.15, 3.3);
-root.add(hs, hsL);
+        const hsL = new THREE.Mesh(makeSweptWingGeo(2.8, 1.6, 0.8, 0.5, 0.22, 0, -1), bodyMat); hsL.position.set(0, 0.15, 3.3);
+        root.add(hs, hsL);
         const tf = new THREE.Mesh(new THREE.ConeGeometry(0.65, 2.5, 8), new THREE.MeshBasicMaterial({ color: 0xffaa22 })); tf.rotation.x = Math.PI * 0.5; tf.position.set(0, -0.1, 5.2); root.add(tf); exhaustFlames.push(tf);
         canopyGroup.position.set(0, 1.32, 0.25); root.add(canopyGroup);
       }
