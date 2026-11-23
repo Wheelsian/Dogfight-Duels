@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-pattern="none">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#13121d" />
+  <title>GradeQuest</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <style>
+    :root { --sans: "Trebuchet MS","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,sans-serif; --mono: ui-monospace,Menlo,Monaco,Consolas,monospace; --accent: #7c3aed; --accent-ink: #ffffff; --accent-wash: rgba(124,58,237,0.22); --accent-line: rgba(124,58,237,0.36); --pat-col: rgba(255,255,255,0.05); }
+    html[data-theme="dark"] { --bg: #13121d; --surface: #1e1c2e; --surface-2: #27253d; --inset: #161524; --edge: #08070d; --border: #383554; --ink: #f8fafc; --muted: #a5a2c4; --good: #22c55e; --good-dark: #15803d; --good-bg: #143322; --good-ink: #86efac; --gold: #fbbf24; --gold-dark: #b45309; --gold-bg: #3b2809; --gold-ink: #fde68a; --rough: #fb7185; --rough-dark: #be123c; --rough-bg: #3b1320; --rough-ink: #fda4af; --pat-col: rgba(255,255,255,0.045); }
+    html[data-theme="light"] { --bg: #fff9eb; --surface: #ffffff; --surface-2: #f4efe0; --inset: #efe8d5; --edge: #1e1b2e; --border: #1e1b2e; --ink: #1e1b2e; --muted: #5b5570; --good: #22c55e; --good-dark: #15803d; --good-bg: #dcfce7; --good-ink: #14532d; --gold: #f59e0b; --gold-dark: #b45309; --gold-bg: #fef3c7; --gold-ink: #78350f; --rough: #f43f5e; --rough-dark: #be123c; --rough-bg: #ffe4e6; --rough-ink: #881337; --pat-col: rgba(30,27,46,0.06); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: var(--sans); color: var(--ink); background-color: var(--bg); line-height: 1.4; min-height: 100vh; padding-bottom: 42px; transition: background-color 0.25s; }
+
+    .pat-grid, html[data-pattern="grid"] body { background-image: linear-gradient(var(--pat-col) 2px, transparent 2px), linear-gradient(90deg, var(--pat-col) 2px, transparent 2px); background-size: 26px 26px; }
+    .pat-dots, html[data-pattern="dots"] body { background-image: radial-gradient(var(--pat-col) 2.5px, transparent 2.5px); background-size: 20px 20px; }
+    .pat-stripes, html[data-pattern="stripes"] body { background-image: repeating-linear-gradient(-45deg, var(--pat-col), var(--pat-col) 10px, transparent 10px, transparent 24px); }
+    .pat-diamonds, html[data-pattern="diamonds"] body { background-image: linear-gradient(45deg, var(--pat-col) 25%, transparent 25%), linear-gradient(-45deg, var(--pat-col) 25%, transparent 25%); background-size: 30px 30px; }
+    .pat-checker, html[data-pattern="checker"] body { background-image: conic-gradient(var(--pat-col) 90deg, transparent 90deg 180deg, var(--pat-col) 180deg 270deg, transparent 270deg); background-size: 32px 32px; }
+    .pat-rings, html[data-pattern="rings"] body { background-image: radial-gradient(circle, transparent 10px, var(--pat-col) 11px, var(--pat-col) 13px, transparent 14px, transparent 20px, var(--pat-col) 21px, var(--pat-col) 23px, transparent 24px); background-size: 54px 54px; }
+
+    .pat-c_grid, html[data-pattern="c_grid"] body { background-color: color-mix(in srgb, var(--accent) 22%, var(--bg)); background-image: linear-gradient(var(--accent-line) 2px, transparent 2px), linear-gradient(90deg, var(--accent-line) 2px, transparent 2px); background-size: 26px 26px; }
+    .pat-c_rings, html[data-pattern="c_rings"] body { background-color: color-mix(in srgb, var(--accent) 24%, var(--bg)); background-image: radial-gradient(circle, transparent 10px, var(--accent-line) 11px, var(--accent-line) 13px, transparent 14px, transparent 20px, var(--accent-line) 21px, var(--accent-line) 23px, transparent 24px); background-size: 54px 54px; }
+    .pat-c_stripes, html[data-pattern="c_stripes"] body { background-color: color-mix(in srgb, var(--accent) 24%, var(--bg)); background-image: repeating-linear-gradient(-45deg, var(--accent-wash), var(--accent-wash) 12px, transparent 12px, transparent 28px); }
+    .pat-c_aura, html[data-pattern="c_aura"] body { background-color: color-mix(in srgb, var(--accent) 20%, var(--bg)); background-image: radial-gradient(circle at 20% 15%, var(--accent-line), transparent 45%), radial-gradient(circle at 80% 80%, var(--accent-wash), transparent 45%), radial-gradient(var(--pat-col) 2px, transparent 2px); background-size: 100% 100%, 100% 100%, 22px 22px; }
+    .pat-c_royal, html[data-pattern="c_royal"] body { background-color: color-mix(in srgb, var(--accent) 28%, var(--bg)); background-image: linear-gradient(45deg, var(--accent-wash) 25%, transparent 25%), linear-gradient(-45deg, var(--accent-wash) 25%, transparent 25%), linear-gradient(135deg, var(--accent-line) 0%, transparent 60%); background-size: 32px 32px, 32px 32px, 100% 100%; }
+
+    .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+    .muted { color: var(--muted); }
+    button { font-family: inherit; cursor: pointer; color: inherit; background: transparent; border: none; touch-action: manipulation; }
+    input, select { font-family: inherit; background: var(--inset); color: var(--ink); font-weight: 700; border: 2.5px solid var(--border); border-radius: 13px; padding: 10px 12px; font-size: 16px; width: 100%; outline: none; }
+    input:focus, select:focus { border-color: var(--accent); }
+    input[type="color"] { padding: 3px; height: 42px; width: 56px; cursor: pointer; }
+
+    @keyframes pagePop { from { opacity: 0; transform: translateY(10px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes slotPopIn { 
+      0% { opacity: 0; transform: scale(0.68) translateY(18px); } 
+      65% { opacity: 1; transform: scale(1.03) translateY(-3px); } 
+      82% { transform: scale(0.98) translateY(1px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); } 
+    }
+    @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(0.9); } 100% { opacity: 0; transform: translate(-50%, -48px) scale(1.15); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pfpPop { 0% { transform: scale(0.75); } 100% { transform: scale(1); } }
+    @keyframes rainbowBright { 0% { filter: hue-rotate(0deg) saturate(1.45) brightness(1.22); } 100% { filter: hue-rotate(360deg) saturate(1.45) brightness(1.22); } }
+    @keyframes titleShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+    @keyframes glitchTwitch { 0%,90%,100% { transform: translate(0,0); } 92% { transform: translate(-2px,1px); } 95% { transform: translate(2px,-1px); } 97% { transform: translate(-1px,-1px); } }
+    @keyframes twinkle { 0%,100% { opacity: 0.25; transform: scale(0.75); } 50% { opacity: 1; transform: scale(1.15); } }
+    @keyframes pulseSoft { 0%,100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.1); opacity: 1; } }
+    @keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes flameEmber {
+      0% { background: #fef08a; box-shadow: 0 0 6px #facc15; transform: translateY(1px) scale(1); opacity: 0.95; }
+      55% { background: #fb923c; box-shadow: 0 0 5px #f97316; transform: translateY(-7px) scale(0.85); opacity: 0.85; }
+      100% { background: #ea580c; box-shadow: none; transform: translateY(-14px) scale(0.3); opacity: 0; }
+    }
+
+    .page-animate { animation: pagePop 0.24s cubic-bezier(0.34,1.56,0.64,1); }
+    .slot-pop-in { animation: slotPopIn 0.34s cubic-bezier(0.34,1.56,0.64,1) both; }
+    .pfp-updated { animation: pfpPop 0.55s ease-out; }
+    .float-xp { position: fixed; pointer-events: none; z-index: 900; font-family: var(--mono); font-weight: 900; font-size: 1.05rem; color: var(--gold); text-shadow: 0 2px 0 #000; animation: floatUp 0.85s ease-out forwards; }
+    #confettiCanvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 950; }
+
+    .av-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 12px; overflow: visible; }
+    .user-avatar { position: relative; width: 100%; height: 100%; border-radius: 10px; color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2.5px solid var(--edge); z-index: 2; }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.25s; }
+    .av-spinner { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); z-index: 3; }
+    .av-spinner::after { content: ""; width: 14px; height: 14px; border: 2.5px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
+
+    .frame-gold .user-avatar { border-color: #fbbf24; box-shadow: 0 0 0 2px #b45309; }
+    .frame-emerald .user-avatar { border-color: #22c55e; box-shadow: 0 0 0 2px #15803d; }
+    .frame-crimson .user-avatar { border-color: #ef4444; box-shadow: 0 0 0 2px #991b1b; }
+    .frame-neon .user-avatar { border-color: #22d3ee; box-shadow: 0 0 0 1px #0284c7, 0 0 10px rgba(34,211,238,0.7); }
+    .frame-glitch { animation: glitchTwitch 2.6s infinite; }
+    .frame-glitch .user-avatar { border-color: #f43f5e; box-shadow: -3px 0 0 #06b6d4, 3px 0 0 #f43f5e; }
+    .frame-rainbow { animation: rainbowBright 3.2s linear infinite; }
+    .frame-rainbow .user-avatar { border-color: #f472b6; box-shadow: 0 0 0 2px #a78bfa, 0 0 16px rgba(244,114,182,0.9); }
+    .frame-flame .user-avatar { border-color: #f97316; box-shadow: 0 0 10px rgba(249,115,22,0.75); }
+    .f-dot { position: absolute; top: -3px; width: 6px; height: 6px; border-radius: 50%; pointer-events: none; z-index: 4; animation: flameEmber 1.2s ease-out infinite; }
+    .f-dot:nth-child(1) { left: 10%; animation-duration: 1.05s; animation-delay: 0s; }
+    .f-dot:nth-child(2) { left: 28%; width: 7px; height: 7px; animation-duration: 1.35s; animation-delay: 0.45s; }
+    .f-dot:nth-child(3) { left: 48%; animation-duration: 1.15s; animation-delay: 0.2s; }
+    .f-dot:nth-child(4) { left: 67%; width: 7px; height: 7px; animation-duration: 1.4s; animation-delay: 0.7s; }
+    .f-dot:nth-child(5) { left: 84%; animation-duration: 1.1s; animation-delay: 0.35s; }
+    .frame-frost .user-avatar { border-color: #bae6fd; box-shadow: 0 0 10px rgba(125,211,252,0.75); }
+    .frame-frost::before, .frame-frost::after { content: "✦"; position: absolute; color: #e0f2fe; font-size: 11px; text-shadow: 0 0 6px #38bdf8; pointer-events: none; z-index: 4; animation: twinkle 1.8s ease-in-out infinite; }
+    .frame-frost::before { top: -6px; left: -5px; } .frame-frost::after { bottom: -6px; right: -5px; animation-delay: 0.9s; }
+    .frame-orbit::before { content: ""; position: absolute; inset: -4px; border-radius: 14px; border: 2px dashed #fde047; animation: orbitSpin 6s linear infinite; z-index: 1; pointer-events: none; }
+    .frame-orbit::after { content: "✦"; position: absolute; top: -7px; right: -5px; color: #fde047; font-size: 13px; text-shadow: 0 0 6px #f59e0b; z-index: 4; animation: pulseSoft 1.2s ease-in-out infinite; pointer-events: none; }
+    .frame-orbit .user-avatar { border-color: #fde047; box-shadow: 0 0 12px rgba(253,224,71,0.65); }
+
+    .title-pill { display: inline-block; font-size: 0.7rem; font-weight: 900; padding: 2px 7px; border-radius: 7px; border: 1.5px solid var(--edge); margin-left: 4px; vertical-align: middle; }
+    .tfx-comeback { background: #14532d; color: #86efac; border-color: #22c55e; box-shadow: 0 0 7px rgba(34,197,94,0.45); }
+    .tfx-built { background: #083344; color: #67e8f9; border-color: #06b6d4; box-shadow: 0 0 8px rgba(6,182,212,0.55); }
+    .tfx-locked { background: #1e3a8a; color: #93c5fd; border-color: #3b82f6; box-shadow: 0 0 7px rgba(59,130,246,0.5); }
+    .tfx-owl { background: linear-gradient(90deg,#312e81,#6d28d9,#312e81); background-size: 200% auto; color: #e0e7ff; border-color: #818cf8; animation: titleShine 3s linear infinite; }
+    .tfx-main { background: linear-gradient(90deg,#be185d,#9333ea,#be185d); background-size: 200% auto; color: #fdf2f8; border-color: #f472b6; animation: titleShine 2.6s linear infinite; }
+    .tfx-demon { background: #450a0a; color: #fdba74; border-color: #f97316; box-shadow: 0 0 9px rgba(249,115,22,0.65); }
+    .tfx-clutch { background: linear-gradient(90deg,#991b1b,#f59e0b,#991b1b); background-size: 200% auto; color: #fef3c7; border-color: #fbbf24; animation: titleShine 2.4s linear infinite; }
+    .tfx-weapon { background: linear-gradient(90deg,#b45309,#fde047,#b45309); background-size: 200% auto; color: #1e1b2e; border-color: #fef08a; animation: titleShine 2.5s linear infinite; }
+    .tfx-threat { background: linear-gradient(90deg,#065f46,#06b6d4,#065f46); background-size: 200% auto; color: #ecfeff; border-color: #34d399; animation: titleShine 2.2s linear infinite; }
+    .tfx-royal { background: linear-gradient(90deg,#6d28d9,#f59e0b,#6d28d9); background-size: 200% auto; color: #fff; border-color: #fbbf24; animation: titleShine 2.2s linear infinite; }
+    .tfx-boss { background: linear-gradient(90deg,#18181b,#991b1b,#18181b); background-size: 200% auto; color: #fca5a5; border-color: #ef4444; box-shadow: 0 0 10px rgba(239,68,68,0.65); animation: titleShine 2.4s linear infinite; }
+    .tfx-prism { background: linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4,#22c55e,#ec4899); background-size: 200% auto; color: #fff; border-color: #fff; animation: titleShine 2s linear infinite; }
+    .tfx-hof { background: linear-gradient(90deg,#fef08a,#ffffff,#f59e0b,#fef08a); background-size: 200% auto; color: #1e1b2e; border-color: #ffffff; box-shadow: 0 0 12px rgba(254,240,138,0.85); animation: titleShine 1.9s linear infinite; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 14px; border: 2.5px solid var(--edge); border-radius: 14px; background: var(--surface-2); font-weight: 800; font-size: 0.88rem; min-height: 42px; box-shadow: 0 4px 0 var(--edge); transition: transform 0.12s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.12s, filter 0.12s; }
+    @media(hover: hover) {
+      .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0 var(--edge); filter: brightness(1.06); }
+      .tab-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--edge); }
+      .lb-row:hover { transform: translateY(-2px); border-color: var(--accent); }
+      .user-pill:hover { transform: translateY(-2px); }
+      .period-chip:hover { transform: translateY(-2px); border-color: var(--accent); }
+    }
+    .btn:active { transform: translateY(3px) !important; box-shadow: 0 1px 0 var(--edge) !important; }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); }
+    .btn-good { background: var(--good-bg); color: var(--good-ink); border-color: var(--good); box-shadow: 0 4px 0 var(--good-dark); }
+    .btn-good.selected { background: var(--good); color: #fff; border-color: var(--edge); box-shadow: 0 2px 0 var(--edge); transform: translateY(2px); }
+    .btn-gold { background: var(--gold-bg); color: var(--gold-ink); border-color: var(--gold); box-shadow: 0 4px 0 var(--gold-dark); }
+    .btn-gold.selected { background: var(--gold); color: #1e1b2e; border-color: var(--edge); box-shadow: 0 2px 0 var(--edge); transform: translateY(2px); }
+    .btn-rough { background: var(--rough-bg); color: var(--rough-ink); border-color: var(--rough); box-shadow: 0 4px 0 var(--rough-dark); }
+    .btn-rough.selected { background: var(--rough); color: #fff; border-color: var(--edge); box-shadow: 0 2px 0 var(--edge); transform: translateY(2px); }
+    .btn-danger { background: var(--rough-bg); color: var(--rough-ink); border-color: var(--rough); box-shadow: 0 4px 0 var(--rough-dark); }
+    .btn-sm { padding: 6px 10px; font-size: 0.78rem; min-height: 34px; border-radius: 11px; box-shadow: 0 3px 0 var(--edge); }
+
+    .container { max-width: 980px; margin: 0 auto; padding: 14px; }
+    .card { background: var(--surface); border: 3px solid var(--edge); border-radius: 20px; padding: 16px; box-shadow: 0 5px 0 var(--edge); }
+    .card-inset { background: var(--inset); border: 2px solid var(--border); border-radius: 14px; padding: 12px; }
+    .topbar { background: var(--surface); border-bottom: 3px solid var(--edge); position: sticky; top: 0; z-index: 100; }
+    .topbar-inner { max-width: 980px; margin: 0 auto; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .logo-slot { width: 62px; height: 62px; border-radius: 16px; border: 3px solid var(--edge); box-shadow: 0 4px 0 var(--edge); overflow: hidden; background: #fff; flex-shrink: 0; }
+    .logo-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .coin-pill { font-family: var(--mono); font-size: 0.86rem; font-weight: 900; padding: 6px 10px; border-radius: 12px; background: var(--gold-bg); color: var(--gold-ink); border: 2.5px solid var(--gold); box-shadow: 0 3px 0 var(--gold-dark); }
+    .user-pill { display: inline-flex; align-items: center; gap: 8px; padding: 4px 11px 4px 5px; border: 2.5px solid var(--edge); border-radius: 13px; background: var(--surface-2); font-size: 0.84rem; font-weight: 800; cursor: pointer; box-shadow: 0 3px 0 var(--edge); transition: transform 0.12s; }
+
+    .mail-btn-wrap { position: relative; display: inline-flex; }
+    .mail-badge { position: absolute; top: -5px; right: -5px; background: var(--rough); color: #fff; font-size: 0.65rem; font-weight: 900; min-width: 17px; height: 17px; line-height: 15px; border-radius: 99px; text-align: center; border: 1.5px solid var(--edge); pointer-events: none; }
+
+    .tabs { display: flex; gap: 7px; margin: 14px 0 16px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; padding-bottom: 4px; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { padding: 10px 14px; border: 2.5px solid var(--edge); border-radius: 15px; background: var(--surface); font-weight: 900; font-size: 0.86rem; box-shadow: 0 4px 0 var(--edge); flex-shrink: 0; transition: transform 0.12s, box-shadow 0.12s; }
+    .tab-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--edge); }
+    .tab-btn.active { background: var(--accent); color: var(--accent-ink); }
+
+    .xp-hero { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .xp-track { height: 12px; background: var(--inset); border: 2px solid var(--edge); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+    .xp-fill { height: 100%; background: var(--accent); transition: width 0.35s ease; }
+    .day-strip { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .day-pill { font-family: var(--mono); font-weight: 900; font-size: 0.85rem; padding: 5px 12px; border-radius: 11px; border: 2px solid var(--edge); background: var(--surface-2); }
+    .day-pill.today { background: var(--good-bg); color: var(--good-ink); border-color: var(--good); }
+    .day-pill.tmrw { background: var(--gold-bg); color: var(--gold-ink); border-color: var(--gold); }
+
+    .period-chip-bar { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+    .period-chip { font-size: 0.78rem; font-weight: 800; padding: 6px 11px; border: 2px solid var(--edge); border-radius: 12px; background: var(--surface-2); box-shadow: 0 3px 0 var(--edge); cursor: pointer; transition: transform 0.1s, border-color 0.1s; }
+    .period-chip:active { transform: translateY(2px); }
+
+    .slots-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media(max-width: 680px) { .slots-grid { grid-template-columns: 1fr; } }
+    .slot-card { background: var(--surface); border: 3px solid var(--edge); border-radius: 18px; padding: 14px; box-shadow: 0 5px 0 var(--edge); display: flex; flex-direction: column; gap: 11px; }
+    .slot-card.done-crushed { border-color: var(--gold); } .slot-card.done-good { border-color: var(--good); } .slot-card.done-rough { border-color: var(--rough); }
+    .rating-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .rating-row .btn { min-height: 46px; font-size: 0.84rem; padding: 6px; }
+
+    .badge { font-family: var(--mono); font-weight: 900; font-size: 0.8rem; padding: 3px 9px; border-radius: 9px; border: 2px solid var(--edge); background: var(--inset); }
+    .badge.good { background: var(--good-bg); color: var(--good-ink); border-color: var(--good); }
+    .badge.gold { background: var(--gold-bg); color: var(--gold-ink); border-color: var(--gold); }
+    .badge.rough { background: var(--rough-bg); color: var(--rough-ink); border-color: var(--rough); }
+
+    .classes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
+    @media(max-width: 780px) { .classes-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media(max-width: 500px) { .classes-grid { grid-template-columns: 1fr; } }
+    .bar-shell { height: 11px; border: 2px solid var(--edge); border-radius: 99px; background: var(--inset); overflow: hidden; }
+    .bar-core { height: 100%; transition: width 0.35s ease; }
+
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; min-width: 440px; }
+    th, td { padding: 9px 10px; text-align: left; border-bottom: 2px solid var(--border); }
+    th { font-size: 0.72rem; text-transform: uppercase; color: var(--muted); }
+
+    .lb-row { display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 11px; background: var(--surface-2); border: 2.5px solid var(--edge); border-radius: 15px; padding: 11px 13px; margin-bottom: 9px; box-shadow: 0 3px 0 var(--edge); cursor: pointer; transition: transform 0.14s, border-color 0.14s; }
+    .lb-row.me { border-color: var(--accent); }
+    .rank-delta { font-family: var(--mono); font-size: 0.72rem; font-weight: 900; padding: 2px 6px; border-radius: 6px; }
+    .rank-delta.up { background: var(--good-bg); color: var(--good-ink); }
+    .rank-delta.dn { background: var(--rough-bg); color: var(--rough-ink); }
+    .preview-stage { border: 2.5px solid var(--edge); border-radius: 16px; padding: 24px; background-color: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 150px; overflow: hidden; }
+
+    .footer-bar { max-width: 980px; margin: 22px auto 0; padding: 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; padding: 14px; z-index: 500; }
+    .modal-box { width: 100%; max-width: 490px; max-height: 90vh; overflow-y: auto; background: var(--surface); border: 3px solid var(--edge); border-radius: 20px; padding: 18px; box-shadow: 0 7px 0 var(--edge); animation: pagePop 0.18s ease-out; }
+    .toast-container { position: fixed; bottom: 14px; right: 12px; left: 12px; max-width: 340px; margin: 0 auto; display: flex; flex-direction: column; gap: 7px; z-index: 700; pointer-events: none; }
+    .toast { background: var(--surface); border: 2.5px solid var(--edge); border-left-width: 7px; border-radius: 13px; padding: 10px 14px; font-size: 0.86rem; font-weight: 800; box-shadow: 0 4px 0 var(--edge); animation: pagePop 0.2s ease; }
+    .toast.good { border-left-color: var(--good); } .toast.gold { border-left-color: var(--gold); } .toast.rough { border-left-color: var(--rough); }
+
+    .flex-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .flex-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mt-1 { margin-top: 6px; } .mt-2 { margin-top: 10px; } .mt-3 { margin-top: 14px; } .mb-2 { margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+  <div id="app"></div>
+  <div id="modalRoot"></div>
+  <div id="toastRoot" class="toast-container"></div>
+
+  <script>
+    const FIREBASE_URL = "https://gradequest-b4909-default-rtdb.firebaseio.com/".replace(/\/+$/, "");
+    const STORAGE_KEY = "gq_active_user_v5", THEME_KEY = "gq_theme_v5", SFX_KEY = "gq_sfx_enabled_v1";
+    const DRIVE_LOGO = "https://drive.google.com/thumbnail?id=1B2eBmuyVvCJXCGYAzoG47Qphgm-yBNlX&sz=w400";
+    
+    const ALL_PERIODS = [
+      {id:"Math",name:"Math"},
+      {id:"LA",name:"LA"},
+      {id:"SS",name:"SS"},
+      {id:"Science",name:"Science"},
+      {id:"PIF",name:"PIF"},
+      {id:"Gym",name:"Gym"},
+      {id:"Personal Wellness",name:"Personal Wellness"},
+      {id:"Art",name:"Art"},
+      {id:"Music",name:"Music"},
+      {id:"Technology",name:"Technology"}
+    ];
+    const COLORS = ["#7c3aed","#ef4444","#3b82f6","#10b981","#f59e0b","#ec4899"];
+
+    const SHOP_ITEMS = [
+      {id:"pat_grid",cat:"Background Patterns",type:"pattern",val:"grid",name:"Blueprint Grid",desc:"Clean grid lines.",cost:60},
+      {id:"pat_stripes",cat:"Background Patterns",type:"pattern",val:"stripes",name:"Varsity Stripes",desc:"Diagonal stripes.",cost:95},
+      {id:"pat_dots",cat:"Background Patterns",type:"pattern",val:"dots",name:"Polka Dots",desc:"Soft spaced dots.",cost:110},
+      {id:"pat_diamonds",cat:"Background Patterns",type:"pattern",val:"diamonds",name:"Diamond Mesh",desc:"Geometric diamonds.",cost:140},
+      {id:"pat_checker",cat:"Background Patterns",type:"pattern",val:"checker",name:"Retro Checker",desc:"Arcade checkerboard.",cost:175},
+      {id:"pat_rings",cat:"Background Patterns",type:"pattern",val:"rings",name:"Rings",desc:"Concentric target rings.",cost:210},
+      {id:"pat_c_grid",cat:"Colored Backgrounds",type:"pattern",val:"c_grid",name:"Tinted Grid",desc:"Theme-colored backdrop + grid.",cost:320},
+      {id:"pat_c_rings",cat:"Colored Backgrounds",type:"pattern",val:"c_rings",name:"Tinted Rings",desc:"Theme-colored backdrop + rings.",cost:400},
+      {id:"pat_c_stripes",cat:"Colored Backgrounds",type:"pattern",val:"c_stripes",name:"Tinted Stripes",desc:"Color-washed stripes.",cost:480},
+      {id:"pat_c_aura",cat:"Colored Backgrounds",type:"pattern",val:"c_aura",name:"Color Aura",desc:"Ambient theme glow & dots.",cost:580},
+      {id:"pat_c_royal",cat:"Colored Backgrounds",type:"pattern",val:"c_royal",name:"Royal Diamond Wash",desc:"Deep wash + diamond lattice.",cost:750},
+      {id:"frm_gold",cat:"Avatar Frames",type:"frame",val:"gold",name:"Gold Frame",desc:"Classic gold rim.",cost:90},
+      {id:"frm_emerald",cat:"Avatar Frames",type:"frame",val:"emerald",name:"Emerald Frame",desc:"Crisp green rim.",cost:120},
+      {id:"frm_crimson",cat:"Avatar Frames",type:"frame",val:"crimson",name:"Crimson Frame",desc:"Bold ruby-red rim.",cost:150},
+      {id:"frm_neon",cat:"Avatar Frames",type:"frame",val:"neon",name:"Neon Cyan",desc:"Clean glowing cyan border.",cost:190},
+      {id:"frm_glitch",cat:"Avatar Frames",type:"frame",val:"glitch",name:"Glitch Cyber",desc:"Twitching cyber split-color FX.",cost:280},
+      {id:"frm_frost",cat:"Avatar Frames",type:"frame",val:"frost",name:"Frost Crystal",desc:"Icy glow + twinkling sparkles.",cost:360},
+      {id:"frm_flame",cat:"Avatar Frames",type:"frame",val:"flame",name:"Flame Aura",desc:"Rising yellow-to-orange fire particles.",cost:480},
+      {id:"frm_rainbow",cat:"Avatar Frames",type:"frame",val:"rainbow",name:"Rainbow Prism",desc:"Bright rainbow shift on border & avatar.",cost:620},
+      {id:"frm_orbit",cat:"Avatar Frames",type:"frame",val:"orbit",name:"Starlight",desc:"Rotating dashed gold halo + pulsing star.",cost:800},
+      {id:"tit_comeback",cat:"Titles",type:"title",val:"Comeback Kid",fx:"comeback",name:"Comeback Kid",desc:"Green rising glow.",cost:40},
+      {id:"tit_built",cat:"Titles",type:"title",val:"Built Different",fx:"built",name:"Built Different",desc:"Cyan cyber glow.",cost:65},
+      {id:"tit_locked",cat:"Titles",type:"title",val:"Locked-In",fx:"locked",name:"Locked-In",desc:"Cobalt electric badge.",cost:95},
+      {id:"tit_owl",cat:"Titles",type:"title",val:"Night Owl",fx:"owl",name:"Night Owl",desc:"Indigo shimmer effect.",cost:135},
+      {id:"tit_main",cat:"Titles",type:"title",val:"Main Character",fx:"main",name:"Main Character",desc:"Pink & violet spotlight.",cost:175},
+      {id:"tit_demon",cat:"Titles",type:"title",val:"Streak Demon",fx:"demon",name:"Streak Demon",desc:"Pulsing ember glow.",cost:220},
+      {id:"tit_clutch",cat:"Titles",type:"title",val:"Clutch King",fx:"clutch",name:"Clutch King",desc:"Crimson & gold shimmer.",cost:260},
+      {id:"tit_weapon",cat:"Titles",type:"title",val:"Academic Weapon",fx:"weapon",name:"Academic Weapon",desc:"Metallic gold shine.",cost:320},
+      {id:"tit_threat",cat:"Titles",type:"title",val:"4.0 Threat",fx:"threat",name:"4.0 Threat",desc:"Emerald-cyan laser sweep.",cost:380},
+      {id:"tit_royal",cat:"Titles",type:"title",val:"Honor Royalty",fx:"royal",name:"Honor Royalty",desc:"Purple & gold royal sheen.",cost:450},
+      {id:"tit_boss",cat:"Titles",type:"title",val:"Final Boss",fx:"boss",name:"Final Boss",desc:"Dark crimson boss aura.",cost:520},
+      {id:"tit_prism",cat:"Titles",type:"title",val:"Untouchable",fx:"prism",name:"Untouchable",desc:"Moving rainbow prism.",cost:650},
+      {id:"tit_hof",cat:"Titles",type:"title",val:"Hall of Fame",fx:"hof",name:"Hall of Fame",desc:"Blinding white-gold shine.",cost:800},
+      {id:"shield",cat:"Perks",type:"consumable",val:"shield",name:"Streak Shield",desc:"Saves streak & multiplier on 1 missed day.",cost:75}
+    ];
+
+    const MILESTONES = [
+      {id:"m_first",title:"Day One",desc:"Log your first class.",reward:50,check:(s)=>s.totalCheckins>=1,prog:(s)=>[Math.min(s.totalCheckins,1),1]},
+      {id:"m_six",title:"Full 6-Period Day",desc:"Log 6 periods in one day.",reward:100,check:(s)=>s.fullDays>=1,prog:(s)=>[Math.min(s.fullDays,1),1]},
+      {id:"m_dbl",title:"Double Trouble",desc:"Log double periods in one day.",reward:80,check:(s)=>s.hasLoggedDouble,prog:(s)=>[s.hasLoggedDouble?1:0,1]},
+      {id:"m_swp",title:"6/6 Clean Sweep",desc:"Good or Crushed in all 6 slots.",reward:200,check:(s)=>s.cleanSweeps>=1,prog:(s)=>[Math.min(s.cleanSweeps,1),1]},
+      {id:"m_all10",title:"All 10 Explored",desc:"Log all classes at least once.",reward:180,check:(s)=>s.periodsWithLogs>=10,prog:(s)=>[s.periodsWithLogs,10]},
+      {id:"m_pass",title:"Passing Pace",desc:"70%+ overall (6+ logs).",reward:120,check:(s)=>s.totalEntries>=6&&s.overallAcc>=70,prog:(s)=>[s.totalEntries<6?s.totalEntries:Math.min(Math.round(s.overallAcc),70),s.totalEntries<6?6:70]},
+      {id:"m_honor",title:"Honor Roll",desc:"85%+ overall (12+ logs).",reward:250,check:(s)=>s.totalEntries>=12&&s.overallAcc>=85,prog:(s)=>[s.totalEntries<12?s.totalEntries:Math.min(Math.round(s.overallAcc),85),s.totalEntries<12?12:85]},
+      {id:"m_ace",title:"Quiz Ace",desc:"Score 90%+ on an assignment.",reward:100,check:(s)=>s.bestScore>=90,prog:(s)=>[s.bestScore>=90?1:0,1]},
+      {id:"m_s3",title:"3-Day Streak",desc:"3 school days in a row.",reward:125,check:(s)=>s.bestStreak>=3,prog:(s)=>[Math.min(s.bestStreak,3),3]},
+      {id:"m_2500",title:"2,500 Points",desc:"Reach 2,500 total points.",reward:250,check:(s)=>s.points>=2500,prog:(s)=>[Math.min(s.points,2500),2500]}
+    ];
+
+    let activeUser = null;
+    try { activeUser = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch {}
+    let themeMode = localStorage.getItem(THEME_KEY) || "dark";
+    let sfxOn = localStorage.getItem(SFX_KEY) !== "0";
+    let leaderboard = [], activityFeed = [], reactionsMap = {}, lastWeekKing = null, lastLbHash = "";
+    let prevRanks = {}, rankDeltas = {}, prevAvatars = {}, changedAvatars = new Set();
+    let currentTab = "today", viewingDate = getTodayKey(), sortBy = "points", regColor = COLORS[0], regAvatarImg = "", shouldAnimate = true;
+    let timer = { running: false, periodId: "Math", minutes: 15, remainingSec: 900, endAt: null, note: "", interval: null };
+    let justAddedSlotIndex = -1; // For pop-in animation
+
+    function normalizeUserPeriods(u) {
+      if (!u) return;
+      if (u.schedules) {
+        Object.keys(u.schedules).forEach(d => {
+          if (Array.isArray(u.schedules[d])) {
+            u.schedules[d] = u.schedules[d].map(p => p === "MATH" ? "Math" : p);
+          }
+        });
+      }
+      if (u.weeklyTemplate) {
+        Object.keys(u.weeklyTemplate).forEach(d => {
+          if (Array.isArray(u.weeklyTemplate[d])) {
+            u.weeklyTemplate[d] = u.weeklyTemplate[d].map(p => p === "MATH" ? "Math" : p);
+          }
+        });
+      }
+      if (u.logs) {
+        u.logs.forEach(l => { if (l.periodId === "MATH") l.periodId = "Math"; });
+      }
+      if (u.focusSessions) {
+        u.focusSessions.forEach(f => { if (f.periodId === "MATH") f.periodId = "Math"; });
+      }
+      if (u.missingWork) {
+        u.missingWork.forEach(m => { if (m.periodId === "MATH") m.periodId = "Math"; });
+      }
+      u.notifications = u.notifications || [];
+    }
+    if (activeUser) normalizeUserPeriods(activeUser);
+
+    let audioCtx = null, lastHoverSfx = 0;
+    function getAudio() { if (!audioCtx) { const AC = window.AudioContext || window.webkitAudioContext; if (AC) audioCtx = new AC(); } if (audioCtx && audioCtx.state === "suspended") audioCtx.resume(); return audioCtx; }
+    function playTone(freq, dur, vol, delay = 0) {
+      if (!sfxOn) return;
+      try {
+        const ctx = getAudio(); if (!ctx) return;
+        const osc = ctx.createOscillator(), g = ctx.createGain();
+        osc.type = "sine"; osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        g.gain.setValueAtTime(0.0001, ctx.currentTime + delay);
+        g.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + dur);
+        osc.connect(g); g.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay); osc.stop(ctx.currentTime + delay + dur + 0.02);
+      } catch {}
+    }
+    function playSfx(kind) {
+      if (kind === "hover") { const now = Date.now(); if (now - lastHoverSfx < 90) return; lastHoverSfx = now; playTone(660, 0.055, 0.012); }
+      else if (kind === "click") playTone(480, 0.075, 0.025);
+      else if (kind === "pop") { playTone(587.33, 0.06, 0.035, 0); playTone(880, 0.09, 0.04, 0.04); }
+      else if (kind === "coin") { playTone(523.25, 0.14, 0.04, 0); playTone(659.25, 0.18, 0.04, 0.06); }
+      else if (kind === "crush") { playTone(523.25, 0.14, 0.04, 0); playTone(659.25, 0.14, 0.04, 0.055); playTone(783.99, 0.22, 0.045, 0.11); }
+      else if (kind === "level") { playTone(523.25, 0.16, 0.04, 0); playTone(659.25, 0.16, 0.04, 0.07); playTone(783.99, 0.16, 0.04, 0.14); playTone(1046.5, 0.28, 0.045, 0.21); }
+    }
+    document.addEventListener("pointerover", (e) => { if (e.target.closest(".btn, .tab-btn, .lb-row, .user-pill, .period-chip")) playSfx("hover"); });
+    document.addEventListener("click", (e) => { if (e.target.closest(".btn, .tab-btn, .user-pill, .period-chip")) playSfx("click"); });
+
+    function hasDb() { return FIREBASE_URL.startsWith("http"); }
+    function userKey(n) { return String(n || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, ""); }
+    function hexToRgba(hex, a) { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || "#7c3aed"); return m ? `rgba(${parseInt(m[1],16)},${parseInt(m[2],16)},${parseInt(m[3],16)},${a})` : `rgba(124,58,237,${a})`; }
+    function getContrastInk(hex) { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || "#7c3aed"); if (!m) return "#ffffff"; return (parseInt(m[1],16)*299 + parseInt(m[2],16)*587 + parseInt(m[3],16)*114)/1000 >= 155 ? "#111827" : "#ffffff"; }
+
+    function hashPass(pass, salt) { const s = salt + "::" + pass; let h1 = 0x811c9dc5, h2 = 5381; for (let i = 0; i < s.length; i++) { h1 ^= s.charCodeAt(i); h1 = Math.imul(h1, 0x01000193); h2 = Math.imul(h2, 33) ^ s.charCodeAt(i); } return (h1 >>> 0).toString(36) + "_" + (h2 >>> 0).toString(36); }
+    function getLogoHtml(size = 62) { return `<div class="logo-slot" style="width:${size}px;height:${size}px;"><img src="logo.png" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${DRIVE_LOGO}';}" alt="GQ" /></div>`; }
+    function resizeImg(file, size, q, cb) { const r = new FileReader(); r.onload = (e) => { const img = new Image(); img.onload = () => { const c = document.createElement("canvas"); c.width = size; c.height = size; const sz = Math.min(img.width, img.height); c.getContext("2d").drawImage(img, (img.width - sz)/2, (img.height - sz)/2, sz, sz, 0, 0, size, size); cb(c.toDataURL("image/jpeg", q)); }; img.src = e.target.result; }; r.readAsDataURL(file); }
+
+    function titleHtml(titleVal) {
+      if (!titleVal) return "";
+      const item = SHOP_ITEMS.find((i) => i.type === "title" && i.val === titleVal);
+      return `<span class="title-pill ${item ? "tfx-" + item.fx : ""}">${esc(titleVal)}</span>`;
+    }
+
+    function avatarHtml(obj, size = 36, animateSwap = false, frameOverride = null) {
+      const fs = Math.max(11, Math.round(size * 0.4));
+      const frm = frameOverride !== null ? frameOverride : (obj?.frame || obj?.equippedFrame || "");
+      const wrapCls = "av-wrap" + (frm ? " frame-" + frm : "") + (animateSwap ? " pfp-updated" : "");
+      const fx = frm === "flame" ? `<span class="f-dot"></span><span class="f-dot"></span><span class="f-dot"></span><span class="f-dot"></span><span class="f-dot"></span>` : "";
+      const inner = (obj && obj.avatarImg)
+        ? `<div class="user-avatar">${animateSwap ? `<div class="av-spinner"></div>` : ""}<img src="${obj.avatarImg}" style="${animateSwap ? "opacity:0.4;" : ""}" onload="this.style.opacity=1; if(this.previousElementSibling) this.previousElementSibling.remove();" alt="" /></div>`
+        : `<div class="user-avatar" style="font-size:${fs}px;background:${esc(obj?.color || "#7c3aed")}">${esc(initials(obj?.name))}</div>`;
+      return `<div class="${wrapCls}" style="width:${size}px;height:${size}px;">${inner}${fx}</div>`;
+    }
+
+    function syncNotifications() {
+      if (!activeUser) return;
+      activeUser.notifications = activeUser.notifications || [];
+      if (reactionsMap && reactionsMap[activeUser.usernameKey]) {
+        Object.entries(reactionsMap[activeUser.usernameKey]).forEach(([senderKey, rData]) => {
+          if (!rData || !rData.ts) return;
+          const nid = "react_" + senderKey + "_" + rData.ts;
+          if (!activeUser.notifications.some(n => n.id === nid)) {
+            activeUser.notifications.unshift({
+              id: nid,
+              title: `${rData.from || "Squadmate"} reacted with ${rData.emoji || "🔥"}`,
+              desc: `They cheered for you on the squad leaderboard!`,
+              ts: rData.ts,
+              read: false,
+              type: "reaction"
+            });
+          }
+        });
+      }
+      const tKey = getTodayKey();
+      if (isWeekend(tKey)) {
+        const nid = "wknd_" + tKey;
+        if (!activeUser.notifications.some(n => n.id === nid)) {
+          activeUser.notifications.unshift({
+            id: nid,
+            title: "Weekend Mode Active 🏖️",
+            desc: "Streak safe! Take a rest and recharge.",
+            ts: Date.now(),
+            read: false,
+            type: "weekend"
+          });
+        }
+      }
+      if (activeUser.notifications.length > 25) {
+        activeUser.notifications = activeUser.notifications.slice(0, 25);
+      }
+    }
+
+    async function saveUser() {
+      if (!activeUser) return;
+      const st = computeStats(activeUser);
+      activeUser.publicStats = { points: st.points, weeklyPts: st.weeklyPts, lastWeekPts: st.lastWeekPts, acc: st.overallAcc, grade: getGrade(st.overallAcc), streak: st.currentStreak, updatedAt: Date.now() };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(activeUser));
+      const el = document.getElementById("saveBadgeEl"); if (el) el.textContent = "Saved " + formatTime(Date.now());
+      if (hasDb()) { try { await fetch(`${FIREBASE_URL}/users/${encodeURIComponent(activeUser.usernameKey)}.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(activeUser) }); pullLeaderboard(); } catch {} }
+    }
+
+    async function pullLeaderboard() {
+      if (!hasDb()) return;
+      try {
+        const [uRes, rRes] = await Promise.all([fetch(`${FIREBASE_URL}/users.json`), fetch(`${FIREBASE_URL}/reactions.json`).catch(() => null)]);
+        if (!uRes.ok) return;
+        const data = await uRes.json();
+        if (rRes && rRes.ok) reactionsMap = (await rRes.json()) || {};
+        if (!data || typeof data !== "object") return;
+
+        const feed = []; let topLastWeek = -1, kingKey = null;
+        const players = Object.values(data).filter((u) => u && u.name).map((u) => {
+          const st = computeStats(u), uKey = u.usernameKey || userKey(u.name);
+          if (st.lastWeekPts > 0 && st.lastWeekPts > topLastWeek) { topLastWeek = st.lastWeekPts; kingKey = uKey; }
+          (u.logs || []).slice(-3).forEach((l) => {
+            if (!l.ts) return;
+            const act = l.type === "checkin" ? (l.rating === "crushed" ? `crushed ${l.periodId} (+${l.xpEarned})` : l.rating === "good" ? `did good in ${l.periodId}` : null) : `scored ${Math.round((l.earned/l.possible)*100)}% in ${l.periodId}`;
+            if (act) feed.push({ name: u.name, text: act, ts: l.ts });
+          });
+          return { usernameKey: uKey, name: u.name, color: u.color, avatarImg: u.avatarImg || "", frame: u.equippedFrame || "", title: u.equippedTitle || "", points: st.points, weeklyPts: st.weeklyPts, lastWeekPts: st.lastWeekPts, acc: st.overallAcc, streak: st.currentStreak, level: st.levelInfo.level, mult: st.coinMult, periodStats: st.periodStats };
+        });
+
+        lastWeekKing = kingKey; feed.sort((a, b) => b.ts - a.ts); activityFeed = feed.slice(0, 5);
+        syncNotifications();
+
+        const hash = JSON.stringify([players.map((p) => [p.usernameKey, p.points, p.weeklyPts, p.acc, p.streak, p.avatarImg, p.frame, p.title]), reactionsMap]);
+        if (hash !== lastLbHash) {
+          const sorted = [...players].sort((a, b) => sortBy === "week" ? b.weeklyPts - a.weeklyPts : sortBy === "acc" ? (b.acc ?? -1) - (a.acc ?? -1) : b.points - a.points);
+          const newRanks = {};
+          sorted.forEach((p, idx) => {
+            newRanks[p.usernameKey] = idx;
+            if (prevRanks[p.usernameKey] !== undefined && prevRanks[p.usernameKey] !== idx) rankDeltas[p.usernameKey] = prevRanks[p.usernameKey] - idx;
+            if (prevAvatars[p.usernameKey] !== undefined && prevAvatars[p.usernameKey] !== p.avatarImg) { changedAvatars.add(p.usernameKey); setTimeout(() => changedAvatars.delete(p.usernameKey), 2500); }
+            prevAvatars[p.usernameKey] = p.avatarImg;
+          });
+          prevRanks = newRanks; lastLbHash = hash; leaderboard = players;
+          if (!["INPUT", "SELECT"].includes(document.activeElement?.tagName)) render();
+        }
+      } catch {}
+    }
+
+    async function sendReaction(targetKey, emoji) {
+      if (!activeUser || !hasDb()) return;
+      try {
+        await fetch(`${FIREBASE_URL}/reactions/${encodeURIComponent(targetKey)}/${encodeURIComponent(activeUser.usernameKey)}.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ emoji, from: activeUser.name, ts: Date.now() }) });
+        playSfx("coin"); await pullLeaderboard(); openPlayerStatsModal(targetKey);
+      } catch {}
+    }
+
+    async function doLogin(name, password) {
+      const key = userKey(name); if (!key || !password) return toast("Enter username and password", "rough");
+      if (!hasDb()) return toast("Database URL missing", "rough");
+      try {
+        const u = await fetch(`${FIREBASE_URL}/users/${encodeURIComponent(key)}.json`).then((r) => r.json());
+        if (!u || !u.passHash) return toast("Account not found", "rough");
+        if (hashPass(password, u.salt) !== u.passHash) return toast("Wrong password", "rough");
+        normalizeUserPeriods(u);
+        activeUser = u; localStorage.setItem(STORAGE_KEY, JSON.stringify(u)); shouldAnimate = true; render(); pullLeaderboard();
+      } catch { toast("Connection failed", "rough"); }
+    }
+
+    async function doRegister(name, password, color, avatarImg) {
+      const clean = name.trim(), key = userKey(clean); if (!key || !password) return toast("Enter username and password", "rough");
+      if (!hasDb()) return toast("Database URL missing", "rough");
+      try {
+        const ex = await fetch(`${FIREBASE_URL}/users/${encodeURIComponent(key)}.json`).then((r) => r.json());
+        if (ex && ex.passHash) return toast("Username taken", "rough");
+        const salt = Math.random().toString(36).slice(2, 10);
+        activeUser = { 
+          id: "usr_" + Date.now(), 
+          usernameKey: key, 
+          name: clean, 
+          color, 
+          avatarImg: avatarImg || "", 
+          customColor: color, 
+          equippedPattern: "none", 
+          equippedFrame: "", 
+          equippedTitle: "", 
+          salt, 
+          passHash: hashPass(password, salt), 
+          createdAt: Date.now(), 
+          schedules: {}, 
+          weeklyTemplate: {}, // Default is completely empty!
+          logs: [], 
+          focusSessions: [], 
+          milestones: {}, 
+          ownedItems: [], 
+          missingWork: [], 
+          notifications: [{ id: "welcome", title: "Welcome to GradeQuest!", desc: "Set up your weekly schedule or add classes as you go.", ts: Date.now(), read: false }],
+          coinsSpent: 0, 
+          daysOff: [], 
+          shields: 0, 
+          shieldedDays: [] 
+        };
+        regAvatarImg = ""; shouldAnimate = true; await saveUser(); render(); burstConfetti(); playSfx("level");
+      } catch { toast("Connection failed", "rough"); }
+    }
+
+    function signOut() { if (timer.running) pauseTimer(); localStorage.removeItem(STORAGE_KEY); activeUser = null; shouldAnimate = true; render(); }
+    function switchTab(t) { if (currentTab !== t) { currentTab = t; shouldAnimate = true; render(); } }
+    function setViewingDate(d) { viewingDate = d; shouldAnimate = true; render(); }
+    function getTodayKey() { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+    function offsetDateKey(base, diff) { const [y, m, d] = base.split("-").map(Number); const dt = new Date(y, m - 1, d + diff); return dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0") + "-" + String(dt.getDate()).padStart(2, "0"); }
+    function getMondayKey(dStr) { const [y, m, d] = dStr.split("-").map(Number); const dt = new Date(y, m - 1, d); dt.setDate(dt.getDate() - ((dt.getDay() + 6) % 7)); return dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0") + "-" + String(dt.getDate()).padStart(2, "0"); }
+    function getDayOfWeek(dStr) { const [y, m, d] = dStr.split("-").map(Number); return new Date(y, m - 1, d).getDay(); }
+    function isWeekend(dStr) { const day = getDayOfWeek(dStr); return day === 0 || day === 6; }
+    function formatDateLabel(dStr) { const t = getTodayKey(); if (dStr === t) return "Today"; if (dStr === offsetDateKey(t, 1)) return "Tomorrow"; if (dStr === offsetDateKey(t, -1)) return "Yesterday"; const [y, m, d] = dStr.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }); }
+    function timeAgo(ts) { const s = Math.max(1, Math.floor((Date.now() - ts)/1000)); return s < 60 ? s + "s" : s < 3600 ? Math.floor(s/60) + "m" : s < 86400 ? Math.floor(s/3600) + "h" : Math.floor(s/86400) + "d"; }
+    function formatTime(ts) { return ts ? new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""; }
+    function formatClock(sec) { const s = Math.max(0, Math.floor(sec)); return String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0"); }
+    function esc(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+    function initials(n) { const p = String(n || "?").trim().split(/\s+/); return (p[0][0] + (p[1] ? p[1][0] : "")).toUpperCase(); }
+    function getGrade(pct) { return pct === null ? "--" : pct >= 90 ? "A" : pct >= 80 ? "B" : pct >= 70 ? "C" : pct >= 60 ? "D" : "F"; }
+    function accTone(pct) { return pct === null ? "" : pct >= 80 ? "good" : pct >= 65 ? "gold" : "rough"; }
+    function calcLevel(pts) { let lvl = 1, floor = 0, span = 250; while (pts >= floor + span) { floor += span; lvl++; span = 200 + lvl * 100; } return { level: lvl, inLevel: pts - floor, needed: span, pct: Math.min(100, Math.round(((pts - floor)/span)*100)) }; }
+    function toast(msg, tone = "good") { const root = document.getElementById("toastRoot"); if (!root) return; const t = document.createElement("div"); t.className = "toast " + tone; t.textContent = msg; root.appendChild(t); setTimeout(() => { t.style.opacity = "0"; setTimeout(() => t.remove(), 200); }, 2600); }
+    function floatXP(text, x, y) { const el = document.createElement("div"); el.className = "float-xp"; el.textContent = text; el.style.left = (x || window.innerWidth/2) + "px"; el.style.top = (y || window.innerHeight/2) + "px"; document.body.appendChild(el); setTimeout(() => el.remove(), 820); }
+    function burstConfetti() { const c = document.getElementById("confettiCanvas"); if (!c) return; c.width = window.innerWidth; c.height = window.innerHeight; const ctx = c.getContext("2d"), parts = Array.from({ length: 40 }, () => ({ x: c.width/2, y: c.height*0.35, vx: (Math.random()-0.5)*14, vy: (Math.random()-0.8)*14, color: COLORS[Math.floor(Math.random()*COLORS.length)], size: 6+Math.random()*6, life: 50 })); function step() { ctx.clearRect(0,0,c.width,c.height); let alive = false; parts.forEach((p) => { if (p.life <= 0) return; alive = true; p.x += p.vx; p.y += p.vy; p.vy += 0.35; p.life--; ctx.fillStyle = p.color; ctx.fillRect(p.x,p.y,p.size,p.size); }); if (alive) requestAnimationFrame(step); else ctx.clearRect(0,0,c.width,c.height); } step(); }
+    function toggleDayOff(dStr) { if (!activeUser) return; activeUser.daysOff = activeUser.daysOff || []; const idx = activeUser.daysOff.indexOf(dStr); if (idx !== -1) activeUser.daysOff.splice(idx, 1); else activeUser.daysOff.push(dStr); saveUser(); render(); }
+
+    function computeStats(user) {
+      const logs = user.logs || [], focus = user.focusSessions || [], missing = user.missingWork || [];
+      const daysOff = new Set(user.daysOff || []); user.shieldedDays = user.shieldedDays || []; const shielded = new Set(user.shieldedDays);
+      const periodStats = {};
+      ALL_PERIODS.forEach((p) => { periodStats[p.id] = { id: p.id, name: p.name, totalEntries: 0, checkinCount: 0, goodCount: 0, scoresCount: 0, sumPct: 0, accuracy: null, nextGoodPct: 100 }; });
+
+      let logPts = 0, totalEntries = 0, totalCheckins = 0, sumPct = 0, bestScore = 0, hasLoggedDouble = false;
+      const byDate = {}, ptsByDate = {}, accHistory = [];
+
+      logs.forEach((e) => {
+        const xp = Math.max(0, Number(e.xpEarned) || 0); logPts += xp; ptsByDate[e.date] = (ptsByDate[e.date] || 0) + xp;
+        const pid = e.periodId === "MATH" ? "Math" : e.periodId;
+        const ps = periodStats[pid]; if (!ps) return;
+        const pct = e.possible > 0 ? (e.earned / e.possible) * 100 : 0;
+        ps.totalEntries++; ps.sumPct += pct; totalEntries++; sumPct += pct;
+        if (e.type === "checkin") { ps.checkinCount++; totalCheckins++; if (e.rating === "good" || e.rating === "crushed") ps.goodCount++; if (!byDate[e.date]) byDate[e.date] = []; byDate[e.date].push(e); }
+        else if (e.type === "score") { ps.scoresCount++; if (pct > bestScore) bestScore = pct; }
+      });
+
+      focus.forEach((f) => { ptsByDate[f.date] = (ptsByDate[f.date] || 0) + Math.max(0, Number(f.xpEarned) || 0); });
+      missing.filter((m) => m.done && m.doneDate).forEach((m) => { ptsByDate[m.doneDate] = (ptsByDate[m.doneDate] || 0) + 150; });
+
+      let fullDays = 0, cleanSweeps = 0, dailyBonus = 0;
+      Object.entries(byDate).forEach(([dKey, list]) => {
+        const counts = {}; list.forEach((e) => { counts[e.periodId] = (counts[e.periodId] || 0) + 1; });
+        if (Object.values(counts).some((c) => c >= 2)) hasLoggedDouble = true;
+        if (list.length >= 6) { fullDays++; dailyBonus += 100; ptsByDate[dKey] = (ptsByDate[dKey] || 0) + 100; if (list.every((e) => e.rating === "good" || e.rating === "crushed")) { cleanSweeps++; dailyBonus += 150; ptsByDate[dKey] += 150; } }
+      });
+
+      const logDatesSorted = Array.from(new Set(logs.map((l) => l.date))).sort();
+      let cumSum = 0, cumCnt = 0;
+      logDatesSorted.forEach((d) => { logs.filter((l) => l.date === d).forEach((l) => { cumSum += l.possible > 0 ? (l.earned / l.possible) * 100 : 0; cumCnt++; }); if (cumCnt > 0) accHistory.push({ date: d, acc: cumSum / cumCnt }); });
+
+      let periodsWithLogs = 0;
+      Object.values(periodStats).forEach((ps) => { if (ps.totalEntries > 0) { periodsWithLogs++; ps.accuracy = ps.sumPct / ps.totalEntries; ps.nextGoodPct = (ps.sumPct + 100) / (ps.totalEntries + 1); } });
+
+      const today = getTodayKey(), thisMon = getMondayKey(today), lastMon = offsetDateKey(thisMon, -7);
+      let weeklyPts = 0, lastWeekPts = 0;
+      Object.entries(ptsByDate).forEach(([d, p]) => { const mKey = getMondayKey(d); if (mKey === thisMon) weeklyPts += p; else if (mKey === lastMon) lastWeekPts += p; });
+
+      const activeDays = new Set([...Object.keys(byDate), ...focus.map((f) => f.date)]);
+      const sorted = Array.from(activeDays).sort();
+      let currentStreak = 0, bestStreak = 0, earnedCoins = 0;
+      if (sorted.length > 0) {
+        const endDate = sorted[sorted.length - 1] > today ? sorted[sorted.length - 1] : today;
+        let d = sorted[0], guard = 0;
+        while (d <= endDate && guard < 800) {
+          guard++;
+          if (activeDays.has(d)) { currentStreak++; if (currentStreak > bestStreak) bestStreak = currentStreak; const dayMult = Math.min(3, currentStreak); earnedCoins += Math.floor((ptsByDate[d] || 0)/15) * dayMult; }
+          else if (isWeekend(d) || daysOff.has(d) || shielded.has(d)) {}
+          else if (d < today) { if ((user.shields || 0) > 0 && currentStreak > 0) { user.shields--; user.shieldedDays.push(d); shielded.add(d); } else currentStreak = 0; }
+          d = offsetDateKey(d, 1);
+        }
+      }
+
+      const focusPts = focus.reduce((a, f) => a + Math.max(0, Number(f.xpEarned) || 0), 0);
+      const milestonePts = Object.values(user.milestones || {}).reduce((a, m) => a + (Number(m.reward) || 0), 0);
+      const rescuePts = missing.filter((m) => m.done).length * 150;
+      const points = logPts + dailyBonus + focusPts + milestonePts + rescuePts;
+      const coins = Math.max(0, earnedCoins + Math.floor(milestonePts/15) - (user.coinsSpent || 0));
+      const coinMult = Math.min(3, Math.max(1, currentStreak));
+
+      return { points, weeklyPts, lastWeekPts, coins, coinMult, levelInfo: calcLevel(points), overallAcc: totalEntries > 0 ? sumPct / totalEntries : null, accHistory, totalEntries, totalCheckins, periodsWithLogs, fullDays, cleanSweeps, hasLoggedDouble, bestScore, focusCount: focus.length, currentStreak, bestStreak, periodStats };
+    }
+
+    function buyOrEquipItem(itemId) {
+      if (!activeUser) return; const item = SHOP_ITEMS.find((i) => i.id === itemId); if (!item) return;
+      const st = computeStats(activeUser); activeUser.ownedItems = activeUser.ownedItems || [];
+      if (item.type === "consumable") {
+        if (st.coins < item.cost) return toast("Not enough Coins", "rough");
+        activeUser.coinsSpent = (activeUser.coinsSpent || 0) + item.cost; activeUser.shields = (activeUser.shields || 0) + 1;
+        playSfx("coin"); saveUser(); closeModal(); render(); return toast("Bought Streak Shield", "good");
+      }
+      if (activeUser.ownedItems.includes(item.id)) {
+        if (item.type === "pattern") activeUser.equippedPattern = activeUser.equippedPattern === item.val ? "none" : item.val;
+        if (item.type === "frame") activeUser.equippedFrame = activeUser.equippedFrame === item.val ? "" : item.val;
+        if (item.type === "title") activeUser.equippedTitle = activeUser.equippedTitle === item.val ? "" : item.val;
+        saveUser(); closeModal(); render(); return;
+      }
+      if (st.coins < item.cost) return toast(`Need ${item.cost - st.coins} more Coins`, "rough");
+      activeUser.coinsSpent = (activeUser.coinsSpent || 0) + item.cost; activeUser.ownedItems.push(item.id);
+      if (item.type === "pattern") activeUser.equippedPattern = item.val;
+      if (item.type === "frame") activeUser.equippedFrame = item.val;
+      if (item.type === "title") activeUser.equippedTitle = item.val;
+      burstConfetti(); playSfx("level"); saveUser(); closeModal(); render();
+    }
+
+    function openShopPreview(itemId) {
+      if (!activeUser) return; const item = SHOP_ITEMS.find((i) => i.id === itemId); if (!item) return;
+      const owned = (activeUser.ownedItems || []).includes(item.id);
+      const isEq = (item.type === "pattern" && activeUser.equippedPattern === item.val) || (item.type === "frame" && activeUser.equippedFrame === item.val) || (item.type === "title" && activeUser.equippedTitle === item.val);
+      let pv = "";
+      if (item.type === "pattern") pv = `<div class="preview-stage pat-${item.val}"><div class="card" style="padding:10px 14px; font-size:0.84rem;"><strong>Period 1 — Math</strong><div class="muted" style="font-size:0.75rem;">${item.name}</div></div></div>`;
+      else if (item.type === "frame") pv = `<div class="preview-stage"><div class="flex-row">${avatarHtml(activeUser, 66, false, item.val)}<div><strong>${esc(activeUser.name)}</strong><div class="muted" style="font-size:0.8rem;">Live Avatar Frame</div></div></div></div>`;
+      else if (item.type === "title") pv = `<div class="preview-stage"><div class="lb-row me" style="width:100%;margin:0;cursor:default;"><div class="mono" style="font-weight:900;">#1</div><div class="flex-row">${avatarHtml(activeUser, 38)}<div><strong>${esc(activeUser.name)}</strong>${titleHtml(item.val)}</div></div><div class="mono"><strong>1,250</strong></div></div></div>`;
+      else pv = `<div class="preview-stage"><div style="font-size:2.4rem;">🛡️</div><div class="muted" style="font-size:0.82rem;text-align:center;">Automatically saves your streak &amp; multiplier if you miss a school day.</div></div>`;
+
+      document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box">
+        <div class="flex-between mb-2"><h3>${item.name}</h3><button class="btn btn-sm" onclick="closeModal()">✕</button></div>
+        ${pv}<p class="muted mt-2" style="font-size:0.84rem;">${item.desc}</p>
+        <div class="flex-row mt-3" style="justify-content:flex-end;"><button class="btn" onclick="closeModal()">Close</button><button class="btn ${isEq ? "btn-good" : "btn-primary"}" onclick="buyOrEquipItem('${item.id}')">${isEq ? "Unequip" : owned ? "Equip" : "Buy (" + item.cost + " 🪙)"}</button></div>
+      </div></div>`;
+    }
+
+    function addMissingTask(periodId, title) { if (!activeUser || !title.trim()) return; activeUser.missingWork = activeUser.missingWork || []; activeUser.missingWork.push({ id: "mw_" + Date.now(), periodId, title: title.trim(), done: false, doneDate: null }); saveUser(); render(); }
+    function toggleMissingTask(id, ev) { if (!activeUser) return; const item = (activeUser.missingWork || []).find((m) => m.id === id); if (!item) return; item.done = !item.done; item.doneDate = item.done ? viewingDate : null; if (item.done) { burstConfetti(); playSfx("level"); if (ev) floatXP("+150 Rescue!", ev.clientX, ev.clientY); } saveUser(); render(); }
+    function deleteMissingTask(id) { if (!activeUser) return; activeUser.missingWork = (activeUser.missingWork || []).filter((m) => m.id !== id); saveUser(); render(); }
+
+    function checkMilestones(u) {
+      u.milestones = u.milestones || {}; const oldLvl = calcLevel(computeStats(u).points).level, st = computeStats(u); let hit = false;
+      MILESTONES.forEach((m) => { if (!u.milestones[m.id] && m.check(st)) { u.milestones[m.id] = { at: Date.now(), reward: m.reward }; toast(`${m.title} (+${m.reward})`, "gold"); hit = true; } });
+      if (hit || calcLevel(computeStats(u).points).level > oldLvl) { burstConfetti(); playSfx("level"); }
+    }
+
+    // Schedule resolver: Empty by default for every day unless set manually or in Weekly Creator
+    function getScheduleForDate(u, dKey) {
+      u.schedules = u.schedules || {};
+      if (Array.isArray(u.schedules[dKey])) {
+        return u.schedules[dKey];
+      }
+      
+      const dow = getDayOfWeek(dKey);
+      if (dow === 0 || dow === 6) {
+        return []; // Weekends are always empty by default
+      }
+
+      // Check if user has explicitly filled out the template for this day of week
+      u.weeklyTemplate = u.weeklyTemplate || {};
+      if (Array.isArray(u.weeklyTemplate[dow]) && u.weeklyTemplate[dow].length > 0) {
+        u.schedules[dKey] = [...u.weeklyTemplate[dow]];
+        return u.schedules[dKey];
+      }
+
+      // Empty by default!
+      return [];
+    }
+
+    function addPeriodToDay(dKey, pid) {
+      if (!activeUser) return;
+      const slots = getScheduleForDate(activeUser, dKey);
+      if (slots.length >= 6) {
+        toast("Maximum of 6 periods reached for today!", "gold");
+        return;
+      }
+      slots.push(pid);
+      activeUser.schedules[dKey] = slots;
+      justAddedSlotIndex = slots.length - 1; // triggers pop-in animation
+      playSfx("pop");
+      saveUser();
+      render();
+    }
+
+    function removePeriodSlot(dKey, idx) {
+      if (!activeUser) return;
+      const slots = getScheduleForDate(activeUser, dKey);
+      slots.splice(idx, 1);
+      activeUser.logs = (activeUser.logs || []).filter(l => !(l.date === dKey && l.slotIndex === idx && l.type === "checkin"));
+      (activeUser.logs || []).forEach(l => {
+        if (l.date === dKey && l.type === "checkin" && l.slotIndex > idx) l.slotIndex--;
+      });
+      activeUser.schedules[dKey] = slots;
+      justAddedSlotIndex = -1;
+      saveUser();
+      render();
+    }
+
+    function clearDaySchedule(dKey) {
+      if (!activeUser) return;
+      activeUser.schedules[dKey] = [];
+      activeUser.logs = (activeUser.logs || []).filter(l => !(l.date === dKey && l.slotIndex === idx && l.type === "checkin"));
+      justAddedSlotIndex = -1;
+      saveUser();
+      render();
+    }
+
+    function changeSlotPeriod(dKey, idx, pid) {
+      if (!activeUser) return;
+      getScheduleForDate(activeUser, dKey)[idx] = pid;
+      const ex = (activeUser.logs || []).find((l) => l.date === dKey && l.slotIndex === idx && l.type === "checkin");
+      if (ex) ex.periodId = pid;
+      checkMilestones(activeUser);
+      saveUser();
+      render();
+    }
+
+    function copyScheduleForward() {
+      if (!activeUser) return;
+      const next = offsetDateKey(viewingDate, 1);
+      activeUser.schedules[next] = [...getScheduleForDate(activeUser, viewingDate)];
+      setViewingDate(next);
+      saveUser();
+    }
+
+    // Weekly Schedule Planner Modal
+    let curTemplateDay = 1; // 1 = Mon ... 5 = Fri
+    const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    
+    function openScheduleCreatorModal(initialDay = 1) {
+      if (!activeUser) return;
+      curTemplateDay = initialDay;
+      activeUser.weeklyTemplate = activeUser.weeklyTemplate || {};
+
+      const daySlots = activeUser.weeklyTemplate[curTemplateDay] || [];
+      document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box">
+        <div class="flex-between mb-2">
+          <div>
+            <h3>Schedule Creator</h3>
+            <div class="muted" style="font-size:0.75rem;">Build your recurring Mon–Fri schedule</div>
+          </div>
+          <button class="btn btn-sm" onclick="closeModal()">✕</button>
+        </div>
+        
+        <div class="flex-row mb-2" style="justify-content:center; gap:5px;">
+          ${[1,2,3,4,5].map(d => `<button class="btn btn-sm ${curTemplateDay===d?"btn-primary":""}" onclick="openScheduleCreatorModal(${d})">${DAY_NAMES[d].slice(0,3)}</button>`).join("")}
+        </div>
+
+        <div class="card-inset mb-2">
+          <div class="flex-between mb-1">
+            <strong>${DAY_NAMES[curTemplateDay]} (${daySlots.length}/6 periods)</strong>
+            ${daySlots.length > 0 ? `<button class="btn btn-sm" onclick="copyTemplateDayToAll(${curTemplateDay})">Copy to Mon–Fri</button>` : ""}
+          </div>
+          
+          <div class="period-chip-bar">
+            ${ALL_PERIODS.map(p => `<button type="button" class="period-chip" onclick="addPeriodToTemplate(${curTemplateDay}, '${p.id}')" ${daySlots.length >= 6 ? "disabled style='opacity:0.5;'" : ""}>+ ${p.name}</button>`).join("")}
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto;">
+            ${daySlots.length === 0 ? `<div class="muted" style="font-size:0.8rem; padding:12px 0; text-align:center;">No classes set for ${DAY_NAMES[curTemplateDay]}. Click the buttons above to add classes.</div>` : daySlots.map((pid, idx) => `
+              <div class="flex-between card-inset" style="padding:6px 10px;">
+                <span style="font-size:0.84rem; font-weight:800;">Period ${idx + 1}: ${esc(pid)}</span>
+                <button class="btn btn-sm btn-danger" onclick="removePeriodFromTemplate(${curTemplateDay}, ${idx})" style="min-height:28px; padding:2px 8px;">✕</button>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="flex-row" style="justify-content:space-between;">
+          <button class="btn btn-sm" onclick="applyTemplateToCurrentWeek(); closeModal();">Apply to This Week</button>
+          <button class="btn btn-primary" onclick="saveUser(); closeModal(); render();">Done</button>
+        </div>
+      </div></div>`;
+    }
+
+    function addPeriodToTemplate(dayNum, pid) {
+      if (!activeUser) return;
+      activeUser.weeklyTemplate = activeUser.weeklyTemplate || {};
+      activeUser.weeklyTemplate[dayNum] = activeUser.weeklyTemplate[dayNum] || [];
+      if (activeUser.weeklyTemplate[dayNum].length >= 6) {
+        toast("Maximum of 6 periods reached!", "gold");
+        return;
+      }
+      activeUser.weeklyTemplate[dayNum].push(pid);
+      playSfx("pop");
+      saveUser();
+      openScheduleCreatorModal(dayNum);
+    }
+
+    function removePeriodFromTemplate(dayNum, idx) {
+      if (!activeUser) return;
+      activeUser.weeklyTemplate[dayNum].splice(idx, 1);
+      saveUser();
+      openScheduleCreatorModal(dayNum);
+    }
+
+    function copyTemplateDayToAll(sourceDay) {
+      if (!activeUser) return;
+      const sourceSlots = activeUser.weeklyTemplate[sourceDay] || [];
+      [1,2,3,4,5].forEach(d => {
+        activeUser.weeklyTemplate[d] = [...sourceSlots];
+      });
+      saveUser();
+      toast(`Copied ${DAY_NAMES[sourceDay]} schedule to Mon–Fri!`, "good");
+      openScheduleCreatorModal(sourceDay);
+    }
+
+    function applyTemplateToCurrentWeek() {
+      if (!activeUser) return;
+      const monKey = getMondayKey(viewingDate);
+      for (let i = 0; i < 5; i++) {
+        const dKey = offsetDateKey(monKey, i);
+        const dow = i + 1;
+        if (activeUser.weeklyTemplate[dow]) {
+          activeUser.schedules[dKey] = [...activeUser.weeklyTemplate[dow]];
+        }
+      }
+      saveUser();
+      render();
+      toast("Applied schedule template to current week!", "good");
+    }
+
+    // Inbox Modal
+    function openInboxModal() {
+      if (!activeUser) return;
+      syncNotifications();
+      const list = activeUser.notifications || [];
+      const unreadCount = list.filter(n => !n.read).length;
+
+      document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box">
+        <div class="flex-between mb-2">
+          <div>
+            <h3>Inbox (${unreadCount} unread)</h3>
+            <div class="muted" style="font-size:0.75rem;">Squad cheers & streak notifications</div>
+          </div>
+          <button class="btn btn-sm" onclick="closeModal()">✕</button>
+        </div>
+
+        <div style="max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+          ${list.length === 0 ? `<div class="muted" style="font-size:0.84rem; text-align:center; padding:18px 0;">All caught up! No notifications yet.</div>` : list.map((n) => `
+            <div class="card-inset" style="${!n.read ? "border-color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, var(--surface));" : ""}">
+              <div class="flex-between">
+                <strong>${esc(n.title)}</strong>
+                <span class="muted mono" style="font-size:0.72rem;">${timeAgo(n.ts)}</span>
+              </div>
+              <div class="muted mt-1" style="font-size:0.78rem;">${esc(n.desc)}</div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="flex-row mt-3" style="justify-content:space-between;">
+          <button class="btn btn-sm" onclick="markAllNotificationsRead()">Mark All Read</button>
+          <button class="btn btn-primary" onclick="closeModal()">Close</button>
+        </div>
+      </div></div>`;
+    }
+
+    function markAllNotificationsRead() {
+      if (!activeUser || !activeUser.notifications) return;
+      activeUser.notifications.forEach(n => n.read = true);
+      saveUser();
+      openInboxModal();
+      render();
+    }
+
+    function rateSlot(dKey, idx, rating, ev) {
+      if (!activeUser) return; const pid = getScheduleForDate(activeUser, dKey)[idx]; activeUser.logs = activeUser.logs || [];
+      const exIdx = activeUser.logs.findIndex((l) => l.date === dKey && l.slotIndex === idx && l.type === "checkin");
+      const xp = rating === "crushed" ? 140 : rating === "good" ? 100 : 0;
+      const entry = { id: "chk_" + Date.now() + "_" + Math.random().toString(36).slice(2, 5), date: dKey, slotIndex: idx, periodId: pid, type: "checkin", rating, earned: rating === "rough" ? 0 : 1, possible: 1, xpEarned: xp, ts: Date.now() };
+      if (exIdx !== -1) activeUser.logs[exIdx] = entry; else activeUser.logs.push(entry);
+      checkMilestones(activeUser); saveUser(); if (xp > 0) playSfx(rating === "crushed" ? "crush" : "coin");
+      if (ev && xp > 0) floatXP(`+${xp} pts`, ev.clientX, ev.clientY); render();
+    }
+    function undoSlotRating(dKey, idx) { if (!activeUser) return; activeUser.logs = (activeUser.logs || []).filter((l) => !(l.date === dKey && l.slotIndex === idx && l.type === "checkin")); saveUser(); render(); }
+
+    function addScoreEntry(pid, earned, possible, note) {
+      if (!activeUser) return; const pct = (earned / possible) * 100, xp = pct >= 85 ? 120 : pct >= 70 ? 80 : pct >= 50 ? 40 : 0;
+      activeUser.logs = activeUser.logs || [];
+      activeUser.logs.push({ id: "scr_" + Date.now(), date: viewingDate, periodId: pid, type: "score", rating: "score", earned, possible, xpEarned: xp, note: note || "Assignment", ts: Date.now() });
+      checkMilestones(activeUser); if (xp > 0) playSfx("coin"); saveUser(); render(); toast(`${pid}: ${Math.round(pct)}%`, xp > 0 ? "good" : "rough");
+    }
+    function deleteLog(id) { if (!activeUser) return; activeUser.logs = (activeUser.logs || []).filter((l) => l.id !== id); saveUser(); render(); }
+
+    function setTimerMinutes(m) { if (!timer.running) { timer.minutes = m; timer.remainingSec = m * 60; render(); } }
+    function startTimer() {
+      if (timer.running) return; timer.running = true; timer.endAt = Date.now() + timer.remainingSec * 1000;
+      timer.interval = setInterval(() => {
+        const left = Math.ceil((timer.endAt - Date.now()) / 1000);
+        if (left <= 0) {
+          clearInterval(timer.interval); timer.running = false; timer.remainingSec = timer.minutes * 60;
+          if (activeUser) { const reward = timer.minutes >= 25 ? 200 : timer.minutes >= 15 ? 120 : 80; activeUser.focusSessions = activeUser.focusSessions || []; activeUser.focusSessions.push({ id: "foc_" + Date.now(), date: viewingDate, periodId: timer.periodId, minutes: timer.minutes, note: timer.note || "Sprint", xpEarned: reward, ts: Date.now() }); checkMilestones(activeUser); saveUser(); burstConfetti(); playSfx("level"); toast(`+${reward} pts`, "gold"); }
+          render();
+        } else { timer.remainingSec = left; const el = document.getElementById("timerDisplayEl"); if (el) el.textContent = formatClock(left); }
+      }, 250); render();
+    }
+    function pauseTimer() { clearInterval(timer.interval); timer.running = false; timer.remainingSec = Math.max(1, Math.ceil((timer.endAt - Date.now()) / 1000)); render(); }
+    function resetTimer() { clearInterval(timer.interval); timer.running = false; timer.remainingSec = timer.minutes * 60; render(); }
+
+    function openPlayerStatsModal(key) {
+      const p = leaderboard.find((x) => x.usernameKey === key); if (!p) return;
+      const psList = ALL_PERIODS.map((per) => p.periodStats?.[per.id] || { id: per.id, name: per.name, accuracy: null, goodCount: 0, checkinCount: 0 });
+      const reacts = Object.values(reactionsMap[key] || {}), fireCnt = reacts.filter((r) => r.emoji === "🔥").length, eyeCnt = reacts.filter((r) => r.emoji === "👀").length;
+      const myReact = activeUser && reactionsMap[key]?.[activeUser.usernameKey]?.emoji;
+      document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box">
+        <div class="flex-between"><div class="flex-row">${avatarHtml(p, 56)}<div><h3 style="line-height:1.1;">${lastWeekKing === p.usernameKey ? "👑 " : ""}${esc(p.name)}</h3><div class="mt-1">${titleHtml(p.title)} <span class="muted" style="font-size:0.78rem;">Level ${p.level || calcLevel(p.points).level}</span></div></div></div><button class="btn btn-sm" onclick="closeModal()">✕</button></div>
+        <div class="flex-row mt-2"><button class="btn btn-sm ${myReact === "🔥" ? "btn-gold selected" : ""}" onclick="sendReaction('${esc(key)}','🔥')">🔥 ${fireCnt}</button><button class="btn btn-sm ${myReact === "👀" ? "btn-primary" : ""}" onclick="sendReaction('${esc(key)}','👀')">👀 ${eyeCnt}</button></div>
+        <div class="grid-2 mt-2"><div class="card-inset"><div class="muted" style="font-size:0.72rem;font-weight:800;">POINTS / STREAK</div><div class="mono" style="font-weight:900;">${p.points.toLocaleString()} • 🔥 ${p.streak}d (${p.mult || 1}x)</div></div><div class="card-inset"><div class="muted" style="font-size:0.72rem;font-weight:800;">OVERALL</div><div class="mono" style="font-weight:900;">${p.acc !== null ? p.acc.toFixed(1).replace(/\.0$/,"") + "% (" + getGrade(p.acc) + ")" : "--%"}</div></div></div>
+        <div class="mt-3"><strong style="font-size:0.85rem;">Classes</strong><div class="mt-1">${psList.map((ps) => `<div class="flex-between" style="padding:6px 0; border-bottom:1.5px solid var(--border); font-size:0.84rem;"><span><strong>${esc(ps.name)}</strong> <span class="muted" style="font-size:0.74rem;">(${ps.goodCount}/${ps.checkinCount})</span></span><span class="badge ${accTone(ps.accuracy)}">${ps.accuracy !== null ? ps.accuracy.toFixed(1).replace(/\.0$/,"") + "% " + getGrade(ps.accuracy) : "--%"}</span></div>`).join("")}</div></div>
+      </div></div>`;
+    }
+
+    function openProfileEditModal() {
+      if (!activeUser) return;
+      document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box">
+        <div class="flex-between"><h3>Profile</h3><button class="btn btn-sm" onclick="closeModal(); signOut();">Sign Out</button></div>
+        <div class="flex-row mt-3">${avatarHtml(activeUser, 54, changedAvatars.has(activeUser.usernameKey))}<div style="flex:1;"><label style="font-size:0.78rem; font-weight:800;">Avatar</label><input type="file" accept="image/*" class="mt-1" onchange="if(this.files[0]) resizeImg(this.files[0], 72, 0.72, (img)=>{ activeUser.avatarImg=img; changedAvatars.add(activeUser.usernameKey); setTimeout(()=>changedAvatars.delete(activeUser.usernameKey),2000); saveUser(); openProfileEditModal(); render(); })" /></div></div>
+        <div class="mt-3"><label style="font-size:0.78rem; font-weight:800;">Accent Color</label><div class="flex-row mt-1">${COLORS.map((c) => `<button type="button" class="av-wrap" style="width:28px; height:28px;" onclick="activeUser.customColor='${c}'; saveUser(); render(); openProfileEditModal();"><div class="user-avatar" style="background:${c};border-color:${(activeUser.customColor||"#7c3aed")===c?"#fff":"var(--edge)"};"></div></button>`).join("")}<input type="color" value="${esc(activeUser.customColor || "#7c3aed")}" onchange="activeUser.customColor=this.value; saveUser(); render(); openProfileEditModal();" /></div></div>
+        <div class="flex-row mt-3" style="justify-content:flex-end;"><button class="btn btn-primary" onclick="closeModal()">Done</button></div>
+      </div></div>`;
+    }
+
+    function openSaveModal() { saveUser(); document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box"><h3>Backup</h3><div class="flex-row mt-3" style="justify-content:flex-end;"><button class="btn" onclick="closeModal()">Close</button><button class="btn btn-primary" onclick="downloadJson()">Download File</button></div></div></div>`; }
+    function downloadJson() { if (!activeUser) return; const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(activeUser, null, 2)], { type: "application/json" })); a.download = `gradequest-${activeUser.usernameKey}.json`; a.click(); closeModal(); }
+    function openLoadModal() { document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box"><h3>Load Backup</h3><input type="file" accept=".json" class="mt-2" onchange="uploadJson(event)" /><div class="flex-row mt-3" style="justify-content:flex-end;"><button class="btn" onclick="closeModal()">Cancel</button></div></div></div>`; }
+    function uploadJson(ev) { const f = ev.target.files[0]; if (!f || !activeUser) return; const r = new FileReader(); r.onload = (e) => { try { const inc = JSON.parse(e.target.result); normalizeUserPeriods(inc); ["logs","schedules","weeklyTemplate","focusSessions","milestones","ownedItems","missingWork","notifications","coinsSpent","daysOff"].forEach((k) => { if (inc[k] !== undefined) activeUser[k] = inc[k]; }); saveUser(); closeModal(); render(); toast("Loaded", "good"); } catch { toast("Invalid file", "rough"); } }; r.readAsText(f); }
+    function openEraseModal() { if (!activeUser) return; document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box"><h3 style="color:var(--rough-ink);">Reset Progress</h3><div class="flex-row mt-3" style="justify-content:flex-end;"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="activeUser.logs=[]; activeUser.schedules={}; activeUser.milestones={}; activeUser.focusSessions=[]; activeUser.missingWork=[]; activeUser.daysOff=[]; saveUser(); closeModal(); render();">Reset Everything</button></div></div></div>`; }
+    function openScoreModal(pid) {
+      document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box"><h3>Log Score: ${esc(pid)}</h3><form id="scrForm" class="mt-2"><div class="grid-2"><input id="scE" type="number" step="0.5" min="0" placeholder="Earned" required /><input id="scP" type="number" step="0.5" min="1" value="20" placeholder="Out of" required /></div><input id="scN" placeholder="Note (optional)" class="mt-2" /><div class="flex-row mt-3" style="justify-content:flex-end;"><button type="button" class="btn" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Save</button></div></form></div></div>`;
+      document.getElementById("scrForm").onsubmit = (e) => { e.preventDefault(); closeModal(); addScoreEntry(pid, Number(document.getElementById("scE").value), Number(document.getElementById("scP").value), document.getElementById("scN").value.trim()); };
+    }
+    function openHistoryModal(pid) {
+      if (!activeUser) return; const items = (activeUser.logs || []).filter((l) => l.periodId === pid).slice().reverse();
+      document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal-box"><div class="flex-between"><h3>${esc(pid)}</h3><button class="btn btn-sm btn-primary" onclick="openScoreModal('${esc(pid)}')">+ Score</button></div><div class="mt-2" style="max-height:260px; overflow-y:auto;">${items.length === 0 ? `<p class="muted">No logs yet.</p>` : items.map((i) => `<div class="flex-between" style="padding:7px 0; border-bottom:2px solid var(--border); font-size:0.84rem;"><div><strong>${i.type === "checkin" ? i.rating.toUpperCase() : esc(i.note)}</strong><div class="muted" style="font-size:0.75rem;">${i.date} • ${Math.round((i.earned/i.possible)*100)}%</div></div><button class="btn btn-sm" onclick="deleteLog('${i.id}'); openHistoryModal('${esc(pid)}');">Del</button></div>`).join("")}</div><div class="flex-row mt-3" style="justify-content:flex-end;"><button class="btn" onclick="closeModal()">Done</button></div></div></div>`;
+    }
+    function closeModal() { document.getElementById("modalRoot").innerHTML = ""; }
+    function toggleTheme() { themeMode = themeMode === "dark" ? "light" : "dark"; localStorage.setItem(THEME_KEY, themeMode); render(); }
+    function toggleSfx() { sfxOn = !sfxOn; localStorage.setItem(SFX_KEY, sfxOn ? "1" : "0"); render(); }
+
+    function render() {
+      const col = (activeUser && activeUser.customColor) || "#7c3aed";
+      document.documentElement.setAttribute("data-theme", themeMode);
+      document.documentElement.setAttribute("data-pattern", (activeUser && activeUser.equippedPattern) || "none");
+      document.documentElement.style.setProperty("--accent", col);
+      document.documentElement.style.setProperty("--accent-ink", getContrastInk(col));
+      document.documentElement.style.setProperty("--accent-wash", hexToRgba(col, 0.22));
+      document.documentElement.style.setProperty("--accent-line", hexToRgba(col, 0.38));
+
+      const oldTops = {};
+      if (currentTab === "lb") document.querySelectorAll("[data-lb-key]").forEach((el) => { oldTops[el.dataset.lbKey] = el.getBoundingClientRect().top; });
+
+      const app = document.getElementById("app");
+      if (!activeUser) {
+        app.innerHTML = renderAuth();
+        document.getElementById("loginForm").onsubmit = (e) => { e.preventDefault(); doLogin(document.getElementById("lName").value, document.getElementById("lPass").value); };
+        document.getElementById("regForm").onsubmit = (e) => { e.preventDefault(); doRegister(document.getElementById("rName").value, document.getElementById("rPass").value, regColor, regAvatarImg); };
+        shouldAnimate = false; return;
+      }
+
+      syncNotifications();
+      const st = computeStats(activeUser), anim = shouldAnimate ? "page-animate" : ""; shouldAnimate = false;
+      const unreadCount = (activeUser.notifications || []).filter(n => !n.read).length;
+
+      app.innerHTML = `
+        <header class="topbar"><div class="topbar-inner">
+          ${getLogoHtml(62)}
+          <div class="flex-row">
+            <button class="btn btn-sm" onclick="toggleSfx()" title="Sounds">${sfxOn ? "🔊" : "🔇"}</button>
+            <div class="coin-pill">🪙 ${st.coins} <span style="font-size:0.75rem;">(${st.coinMult}x)</span></div>
+            <button class="btn btn-sm" onclick="toggleTheme()">${themeMode === "dark" ? "☀" : "🌙"}</button>
+            <div class="mail-btn-wrap">
+              <button class="btn btn-sm" onclick="openInboxModal()" title="Inbox">📬</button>
+              ${unreadCount > 0 ? `<span class="mail-badge">${unreadCount}</span>` : ""}
+            </div>
+            <div class="user-pill" onclick="openProfileEditModal()">${avatarHtml(activeUser, 30, changedAvatars.has(activeUser.usernameKey))}<span>${esc(activeUser.name)}</span></div>
+          </div>
+        </div></header>
+
+        <main class="container">
+          <div class="card xp-hero">
+            <div style="flex:1; min-width:210px;">
+              <div class="flex-between"><strong>Level ${st.levelInfo.level} • <span class="mono">${st.points.toLocaleString()}</span> pts</strong><span class="mono muted" style="font-size:0.78rem;">${st.levelInfo.inLevel}/${st.levelInfo.needed} XP</span></div>
+              <div class="xp-track"><div class="xp-fill" style="width:${st.levelInfo.pct}%"></div></div>
+            </div>
+            <div class="flex-row">
+              <span class="badge ${accTone(st.overallAcc)}">${st.overallAcc !== null ? st.overallAcc.toFixed(1).replace(/\.0$/,"") + "% (" + getGrade(st.overallAcc) + ")" : "--%"}</span>
+              <span class="badge gold">🔥 ${st.currentStreak}d • ${st.coinMult}x</span>
+            </div>
+          </div>
+
+          <nav class="tabs">
+            ${[["today","📝 Today"],["sprint","⏱️ Sprint"+(timer.running?" ●":"")],["stats","📊 Stats"],["milestones","🏅 Milestones"],["shop","🛍️ Shop"],["lb","🏆 Squad"]].map(([id,lbl])=>`<button class="tab-btn ${currentTab===id?"active":""}" onclick="switchTab('${id}')">${lbl}</button>`).join("")}
+          </nav>
+
+          <div class="${anim}">
+            ${currentTab === "today" ? renderToday(activeUser, st) : ""}
+            ${currentTab === "sprint" ? renderSprint() : ""}
+            ${currentTab === "stats" ? renderStats(activeUser, st) : ""}
+            ${currentTab === "milestones" ? renderMilestones(activeUser, st) : ""}
+            ${currentTab === "shop" ? renderShop(activeUser, st) : ""}
+            ${currentTab === "lb" ? renderLeaderboard(activeUser) : ""}
+          </div>
+        </main>
+
+        <footer class="footer-bar">
+          <span id="saveBadgeEl" class="muted mono" style="font-size:0.75rem;">Synced</span>
+          <div class="flex-row"><button class="btn btn-sm" onclick="openSaveModal()">Save</button><button class="btn btn-sm" onclick="openLoadModal()">Load</button><button class="btn btn-sm btn-danger" onclick="openEraseModal()">Reset</button></div>
+        </footer>`;
+
+      const mwForm = document.getElementById("missingForm");
+      if (mwForm) mwForm.onsubmit = (e) => { e.preventDefault(); addMissingTask(document.getElementById("mwClass").value, document.getElementById("mwTitle").value); };
+
+      if (currentTab === "lb" && Object.keys(oldTops).length > 0) {
+        document.querySelectorAll("[data-lb-key]").forEach((el) => {
+          const oldTop = oldTops[el.dataset.lbKey]; if (oldTop === undefined) return;
+          const dy = oldTop - el.getBoundingClientRect().top;
+          if (Math.abs(dy) > 2) { el.style.transition = "none"; el.style.transform = `translateY(${dy}px)`; el.offsetHeight; el.style.transition = "transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)"; el.style.transform = ""; }
+        });
+      }
+    }
+
+    function renderAuth() {
+      return `<div class="container" style="max-width:440px; padding-top:26px;"><div class="card page-animate">
+        <div class="flex-between">${getLogoHtml(68)}<button class="btn btn-sm" onclick="toggleTheme()">${themeMode === "dark" ? "☀" : "🌙"}</button></div>
+        <h3 class="mt-3">Sign In</h3>
+        <form id="loginForm" class="mt-2"><div class="grid-2"><input id="lName" placeholder="Username" required /><input id="lPass" type="password" placeholder="Password" required /></div><button type="submit" class="btn btn-primary mt-2" style="width:100%;">Sign In</button></form>
+        <h3 class="mt-3">Create Account</h3>
+        <form id="regForm" class="mt-2">
+          <input id="rName" placeholder="Username" required /><input id="rPass" type="password" placeholder="Password" required class="mt-2" />
+          <div class="flex-row mt-2">${avatarHtml({ name: "Me", color: regColor, avatarImg: regAvatarImg }, 40)}<input type="file" accept="image/*" style="flex:1;" onchange="if(this.files[0]) resizeImg(this.files[0], 72, 0.72, (img)=>{ regAvatarImg=img; render(); })" /></div>
+          <div class="flex-row mt-2">${COLORS.map((c) => `<button type="button" class="av-wrap" style="width:28px; height:28px;" onclick="regColor='${c}'; render();"><div class="user-avatar" style="background:${c};border-color:${regColor===c?"#fff":"var(--edge)"};"></div></button>`).join("")}</div>
+          <button type="submit" class="btn btn-good mt-3" style="width:100%;">Create Account</button>
+        </form>
+      </div></div>`;
+    }
+
+    function renderToday(u, st) {
+      const today = getTodayKey(), slots = getScheduleForDate(u, viewingDate), checked = {};
+      (u.logs || []).filter((l) => l.date === viewingDate && l.type === "checkin").forEach((l) => { checked[l.slotIndex] = l; });
+      const isOff = (u.daysOff || []).includes(viewingDate), wknd = isWeekend(viewingDate);
+      const missing = u.missingWork || [];
+
+      // Weekend View: strictly relax and show sprint/score options. No class adding.
+      if (wknd) {
+        return `
+          <div class="day-strip">
+            <div class="flex-row">
+              <button class="btn btn-sm" onclick="setViewingDate(offsetDateKey(viewingDate,-1))">←</button>
+              <button class="btn btn-sm ${viewingDate === today ? "btn-primary" : ""}" onclick="setViewingDate('${today}')">Today</button>
+              <button class="btn btn-sm ${viewingDate === offsetDateKey(today, 1) ? "btn-primary" : ""}" onclick="setViewingDate('${offsetDateKey(today, 1)}')">Tomorrow →</button>
+            </div>
+            <div class="flex-row">
+              <span class="day-pill ${viewingDate === today ? "today" : viewingDate === offsetDateKey(today, 1) ? "tmrw" : ""}">${formatDateLabel(viewingDate)}</span>
+              <button class="btn btn-sm" onclick="openScheduleCreatorModal(1)">📅 Schedule Creator</button>
+            </div>
+          </div>
+
+          <div class="card mb-3" style="text-align:center; padding:38px 20px;">
+            <div style="font-size:3.5rem; margin-bottom:12px;">🏖️ 🎮 ☀️</div>
+            <h2 style="margin-bottom:6px;">It's the Weekend!</h2>
+            <p class="muted" style="max-width:440px; margin:0 auto 20px; font-size:0.9rem;">
+              No classes scheduled for today. Your daily streak and multiplier are automatically frozen and safe!
+            </p>
+            <div class="flex-row" style="justify-content:center; gap:10px;">
+              <button class="btn btn-primary" onclick="switchTab('sprint')">⏱️ Start Study Sprint</button>
+              <button class="btn" onclick="openScoreModal('Math')">+ Log a Score</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Missing Work Rescue (+150 pts each)</h3>
+            <form id="missingForm" class="flex-row mt-2" style="flex-wrap:nowrap;">
+              <select id="mwClass" style="max-width:140px;">${ALL_PERIODS.map((p) => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("")}</select>
+              <input id="mwTitle" placeholder="Missing assignment..." required /><button type="submit" class="btn btn-primary btn-sm">Add</button>
+            </form>
+            <div class="mt-2">${missing.length === 0 ? `<div class="muted" style="font-size:0.82rem;">No missing assignments listed.</div>` : missing.map((m) => `<div class="flex-between card-inset mt-1" style="${m.done ? "opacity:0.6;" : ""}">
+              <div class="flex-row"><button class="btn btn-sm ${m.done ? "btn-good selected" : ""}" onclick="toggleMissingTask('${m.id}', event)">${m.done ? "✓" : "○"}</button><div><strong>${esc(m.periodId)}</strong> — <span style="${m.done ? "text-decoration:line-through;" : ""}">${esc(m.title)}</span></div></div>
+              <button class="btn btn-sm" onclick="deleteMissingTask('${m.id}')">✕</button>
+            </div>`).join("")}</div>
+          </div>
+        `;
+      }
+
+      // Weekday View
+      const dow = Math.max(1, Math.min(5, getDayOfWeek(viewingDate)));
+      return `
+        <div class="day-strip">
+          <div class="flex-row">
+            <button class="btn btn-sm" onclick="setViewingDate(offsetDateKey(viewingDate,-1))">←</button>
+            <button class="btn btn-sm ${viewingDate === today ? "btn-primary" : ""}" onclick="setViewingDate('${today}')">Today</button>
+            <button class="btn btn-sm ${viewingDate === offsetDateKey(today, 1) ? "btn-primary" : ""}" onclick="setViewingDate('${offsetDateKey(today, 1)}')">Tomorrow →</button>
+          </div>
+          <div class="flex-row">
+            <span class="day-pill ${viewingDate === today ? "today" : viewingDate === offsetDateKey(today, 1) ? "tmrw" : ""}">${formatDateLabel(viewingDate)}</span>
+            <button class="btn btn-sm" onclick="openScheduleCreatorModal(${dow})">📅 Schedule Creator</button>
+            <button class="btn btn-sm ${isOff ? "btn-gold" : ""}" onclick="toggleDayOff('${viewingDate}')">${isOff ? "🏖️ Off ✓" : "🏖️ Day Off"}</button>
+            <button class="btn btn-sm" onclick="copyScheduleForward()">Copy Next →</button>
+          </div>
+        </div>
+
+        <div class="card-inset mb-2">
+          <div class="flex-between">
+            <div>
+              <strong style="font-size:0.84rem;">Add Class to Today (${slots.length}/6 periods)</strong>
+              <div class="muted" style="font-size:0.74rem;">Click any class button to add it into your schedule</div>
+            </div>
+            ${slots.length > 0 ? `<button class="btn btn-sm btn-danger" onclick="clearDaySchedule('${viewingDate}')">Clear All</button>` : ""}
+          </div>
+
+          <div class="period-chip-bar">
+            ${ALL_PERIODS.map(p => `
+              <button type="button" class="period-chip" onclick="addPeriodToDay('${viewingDate}', '${p.id}')" ${slots.length >= 6 ? "disabled style='opacity:0.4; cursor:not-allowed;'" : ""}>
+                + ${p.name}
+              </button>
+            `).join("")}
+          </div>
+        </div>
+
+        ${isOff ? `<div class="card-inset mb-2" style="border-color:var(--gold);background:var(--gold-bg);font-weight:700;">🏖️ Day Off — Streak protected</div>` : ""}
+
+        ${slots.length === 0 ? `
+          <div class="card mb-3" style="text-align:center; padding:28px 14px;">
+            <p class="muted">No classes added for this day yet.</p>
+            <div class="mt-2 flex-row" style="justify-content:center;">
+              <button class="btn btn-sm btn-primary" onclick="openScheduleCreatorModal(${dow})">Open Schedule Creator</button>
+            </div>
+          </div>
+        ` : `
+          <div class="slots-grid mb-3">${slots.map((pid, idx) => {
+            const ps = st.periodStats[pid], log = checked[idx];
+            const isJustAdded = idx === justAddedSlotIndex;
+            return `<div class="slot-card ${isJustAdded ? "slot-pop-in" : ""} ${log ? "done-" + log.rating : ""}">
+              <div class="flex-between">
+                <strong style="font-size:0.9rem;">Period ${idx + 1}</strong>
+                <div class="flex-row">
+                  <span class="badge ${ps ? accTone(ps.accuracy) : ""}">${ps && ps.accuracy !== null ? ps.accuracy.toFixed(1).replace(/\.0$/,"") + "% (" + getGrade(ps.accuracy) + ")" : "New"}</span>
+                  <button class="btn btn-sm btn-danger" onclick="removePeriodSlot('${viewingDate}', ${idx})" title="Remove class" style="min-height:26px; padding:2px 7px;">✕</button>
+                </div>
+              </div>
+              <div class="flex-row" style="flex-wrap:nowrap;">
+                <select onchange="changeSlotPeriod('${viewingDate}', ${idx}, this.value)">
+                  ${ALL_PERIODS.map((o) => `<option value="${esc(o.id)}" ${o.id === pid ? "selected" : ""}>${esc(o.name)}</option>`).join("")}
+                </select>
+                <button class="btn btn-sm" onclick="openScoreModal('${esc(pid)}')">+Score</button>
+              </div>
+              <div class="rating-row">
+                <button class="btn btn-gold btn-sm ${log?.rating === "crushed" ? "selected" : ""}" onclick="rateSlot('${viewingDate}', ${idx}, 'crushed', event)">Crushed<br>+140</button>
+                <button class="btn btn-good btn-sm ${log?.rating === "good" ? "selected" : ""}" onclick="rateSlot('${viewingDate}', ${idx}, 'good', event)">Good<br>+100</button>
+                <button class="btn btn-rough btn-sm ${log?.rating === "rough" ? "selected" : ""}" onclick="rateSlot('${viewingDate}', ${idx}, 'rough', event)">Rough<br>+0</button>
+              </div>
+              ${log ? `<div class="flex-between" style="font-size:0.78rem;"><span class="muted">+${log.xpEarned} pts</span><button class="btn btn-sm" onclick="undoSlotRating('${viewingDate}', ${idx})">Undo</button></div>` : ""}
+            </div>`;
+          }).join("")}</div>
+        `}
+
+        <div class="card">
+          <h3>Missing Work Rescue (+150 pts each)</h3>
+          <form id="missingForm" class="flex-row mt-2" style="flex-wrap:nowrap;">
+            <select id="mwClass" style="max-width:140px;">${ALL_PERIODS.map((p) => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("")}</select>
+            <input id="mwTitle" placeholder="Missing assignment..." required /><button type="submit" class="btn btn-primary btn-sm">Add</button>
+          </form>
+          <div class="mt-2">${missing.length === 0 ? `<div class="muted" style="font-size:0.82rem;">No missing assignments listed.</div>` : missing.map((m) => `<div class="flex-between card-inset mt-1" style="${m.done ? "opacity:0.6;" : ""}">
+            <div class="flex-row"><button class="btn btn-sm ${m.done ? "btn-good selected" : ""}" onclick="toggleMissingTask('${m.id}', event)">${m.done ? "✓" : "○"}</button><div><strong>${esc(m.periodId)}</strong> — <span style="${m.done ? "text-decoration:line-through;" : ""}">${esc(m.title)}</span></div></div>
+            <button class="btn btn-sm" onclick="deleteMissingTask('${m.id}')">✕</button>
+          </div>`).join("")}</div>
+        </div>
+      `;
+    }
+
+    function renderSprint() {
+      return `<div class="card" style="max-width:540px;margin:0 auto;text-align:center;">
+        <h2>Study Timer</h2>
+        <div class="grid-2 mt-3"><select ${timer.running ? "disabled" : ""} onchange="timer.periodId=this.value;">${ALL_PERIODS.map((p) => `<option value="${esc(p.id)}" ${timer.periodId === p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select><input placeholder="Task note" value="${esc(timer.note)}" ${timer.running ? "disabled" : ""} oninput="timer.note=this.value;" /></div>
+        <div class="flex-row mt-3" style="justify-content:center;">${[[10,80],[15,120],[25,200]].map(([m,pts])=>`<button class="btn btn-sm ${timer.minutes===m?"btn-primary":""}" ${timer.running?"disabled":""} onclick="setTimerMinutes(${m})">${m}m (+${pts})</button>`).join("")}</div>
+        <div id="timerDisplayEl" class="mono" style="font-size:4rem;font-weight:900;margin:16px 0;">${formatClock(timer.remainingSec)}</div>
+        <div class="flex-row" style="justify-content:center;">${!timer.running ? `<button class="btn btn-primary" onclick="startTimer()">Start</button>` : `<button class="btn" onclick="pauseTimer()">Pause</button>`}<button class="btn" onclick="resetTimer()">Reset</button></div>
+      </div>`;
+    }
+
+    function renderAccChart(history) {
+      if (history.length < 2) return `<div class="muted" style="font-size:0.82rem;padding:12px 0;">Log at least 2 days to see your accuracy curve.</div>`;
+      const w = 520, h = 130, pad = 16;
+      const pts = history.map((pt, i) => `${(pad + (i/(history.length-1))*(w-pad*2)).toFixed(1)},${(pad + (1 - pt.acc/100)*(h-pad*2)).toFixed(1)}`);
+      const y70 = pad + 0.3 * (h - pad * 2);
+      return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:130px;display:block;"><line x1="${pad}" y1="${y70}" x2="${w-pad}" y2="${y70}" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/><polyline fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="${pts.join(" ")}" />${history.map((pt, i) => { const [cx, cy] = pts[i].split(","); return `<circle cx="${cx}" cy="${cy}" r="4.5" fill="var(--surface)" stroke="var(--accent)" stroke-width="3"/>`; }).join("")}</svg>`;
+    }
+
+    function renderStats(u, st) {
+      const needPractice = Object.values(st.periodStats).filter((p) => p.accuracy !== null && p.accuracy < 80).sort((a, b) => a.accuracy - b.accuracy);
+      return `
+        <div class="card mb-2"><div class="flex-between"><h3>Accuracy Curve</h3><span class="badge ${accTone(st.overallAcc)}">${st.overallAcc !== null ? st.overallAcc.toFixed(1).replace(/\.0$/,"") + "% (" + getGrade(st.overallAcc) + ")" : "--%"}</span></div>${renderAccChart(st.accHistory)}</div>
+        ${needPractice.length > 0 ? `<div class="card mb-2" style="border-color:var(--gold);"><h3>Classes to Practice</h3><div class="mt-2">${needPractice.map((p) => `<div class="flex-between card-inset mt-1"><div><strong>${esc(p.name)}</strong> — <span class="mono">${p.accuracy.toFixed(1).replace(/\.0$/,"")}% (${getGrade(p.accuracy)})</span> <span class="muted" style="font-size:0.8rem;">• Next Good: ${p.nextGoodPct.toFixed(1).replace(/\.0$/,"")}%</span></div><button class="btn btn-sm btn-primary" onclick="timer.periodId='${esc(p.id)}'; switchTab('sprint');">Sprint</button></div>`).join("")}</div></div>` : ""}
+        <div class="card table-scroll mb-2"><h3 class="mb-2">Report Card</h3><table><thead><tr><th>Class</th><th>Accuracy</th><th>Grade</th><th>Good Days</th><th>Scores</th><th>Next Good</th></tr></thead><tbody>${ALL_PERIODS.map((p) => { const ps = st.periodStats[p.id]; const accTxt = ps.accuracy !== null ? ps.accuracy.toFixed(1).replace(/\.0$/,"") + "%" : "--%"; return `<tr><td><strong>${esc(p.name)}</strong></td><td class="mono"><strong>${accTxt}</strong></td><td><span class="badge ${accTone(ps.accuracy)}">${getGrade(ps.accuracy)}</span></td><td class="mono">${ps.goodCount}/${ps.checkinCount}</td><td class="mono">${ps.scoresCount}</td><td class="mono">${ps.totalEntries > 0 && ps.accuracy < 100 ? ps.nextGoodPct.toFixed(1).replace(/\.0$/,"") + "%" : "--"}</td></tr>`; }).join("")}</tbody></table></div>
+        <div class="classes-grid">${ALL_PERIODS.map((p) => { const ps = st.periodStats[p.id], acc = ps.accuracy, barBg = acc === null ? "var(--border)" : acc >= 80 ? "var(--good)" : acc >= 65 ? "var(--gold)" : "var(--rough)"; return `<div class="card" style="padding:13px;display:flex;flex-direction:column;gap:8px;"><div class="flex-between"><strong>${esc(p.name)}</strong><span class="badge ${accTone(acc)}">${acc !== null ? acc.toFixed(1).replace(/\.0$/,"") + "% (" + getGrade(acc) + ")" : "--%"}</span></div><div class="bar-shell"><div class="bar-core" style="width:${acc !== null ? Math.round(acc) : 0}%; background:${barBg};"></div></div><div class="flex-between muted" style="font-size:0.76rem;"><span>${ps.goodCount}/${ps.checkinCount} good • ${ps.scoresCount} scores</span></div><div class="flex-between"><button class="btn btn-sm" onclick="openHistoryModal('${esc(p.id)}')">History (${ps.totalEntries})</button><button class="btn btn-sm btn-primary" onclick="openScoreModal('${esc(p.id)}')">+ Score</button></div></div>`; }).join("")}</div>`;
+    }
+
+    function renderMilestones(u, st) {
+      const unlocked = u.milestones || {};
+      return `<div class="card"><h3>Milestones (${Object.keys(unlocked).length}/${MILESTONES.length})</h3>
+        <div class="classes-grid mt-2">${MILESTONES.map((m) => { const ok = !!unlocked[m.id], [c, mx] = m.prog(st); return `<div class="card-inset" style="${ok ? "border-color:var(--good);background:var(--good-bg);" : ""}"><div class="flex-between"><strong>${m.title}</strong><span class="mono" style="font-size:0.76rem;">+${m.reward} pts</span></div><div class="muted" style="font-size:0.78rem;">${m.desc}</div><div class="bar-shell mt-2"><div class="bar-core" style="width:${ok?100:Math.round((c/mx)*100)}%;background:${ok?"var(--good)":"var(--accent)"};"></div></div><div class="mono mt-1" style="font-size:0.74rem;">${ok ? "UNLOCKED" : c + "/" + mx}</div></div>`; }).join("")}</div>
+      </div>`;
+    }
+
+    function renderShop(u, st) {
+      const owned = u.ownedItems || [], cats = ["Background Patterns", "Colored Backgrounds", "Avatar Frames", "Titles", "Perks"];
+      return `<div class="card mb-2 flex-between"><h3>Shop</h3><div class="coin-pill">🪙 ${st.coins}</div></div>` +
+        cats.map((cat) => {
+          const items = SHOP_ITEMS.filter((i) => i.cat === cat);
+          return `<div class="card mb-2"><h3 class="mb-2">${cat}</h3><div class="classes-grid">${items.map((item) => {
+            const isOwned = owned.includes(item.id), isEq = (item.type === "pattern" && u.equippedPattern === item.val) || (item.type === "frame" && u.equippedFrame === item.val) || (item.type === "title" && u.equippedTitle === item.val);
+            return `<div class="card-inset" style="display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+              <div><div class="flex-between"><strong>${item.name}</strong><span class="mono" style="font-size:0.78rem;">${isOwned ? "OWNED" : item.cost + " 🪙"}</span></div><div class="muted" style="font-size:0.76rem;">${item.desc}</div></div>
+              <div class="grid-2"><button class="btn btn-sm" onclick="openShopPreview('${item.id}')">Preview</button><button class="btn btn-sm ${isEq ? "btn-good" : "btn-primary"}" onclick="buyOrEquipItem('${item.id}')">${isEq ? "Equipped" : isOwned ? "Equip" : item.cost + " 🪙"}</button></div>
+            </div>`;
+          }).join("")}</div></div>`;
+        }).join("");
+    }
+
+    function renderLeaderboard(u) {
+      const list = [...leaderboard].sort((a, b) => sortBy === "week" ? b.weeklyPts - a.weeklyPts : sortBy === "acc" ? (b.acc ?? -1) - (a.acc ?? -1) : b.points - a.points);
+      return `
+        ${activityFeed.length > 0 ? `<div class="card mb-2"><h3>Live Activity</h3><div class="mt-1">${activityFeed.map((a) => `<div class="flex-between" style="padding:4px 0;font-size:0.82rem;border-bottom:1px solid var(--border);"><span><strong>${esc(a.name)}</strong> ${esc(a.text)}</span><span class="muted mono" style="font-size:0.72rem;">${timeAgo(a.ts)}</span></div>`).join("")}</div></div>` : ""}
+        <div class="card"><div class="flex-between mb-2"><h3>Leaderboard</h3><div class="flex-row">
+          <button class="btn btn-sm ${sortBy === "points" ? "btn-primary" : ""}" onclick="sortBy='points'; render();">All-Time</button>
+          <button class="btn btn-sm ${sortBy === "week" ? "btn-primary" : ""}" onclick="sortBy='week'; render();">This Week</button>
+          <button class="btn btn-sm ${sortBy === "acc" ? "btn-primary" : ""}" onclick="sortBy='acc'; render();">Acc%</button>
+        </div></div>
+        ${list.length === 0 ? `<p class="muted">No players yet.</p>` : list.map((r, i) => {
+          const d = rankDeltas[r.usernameKey] || 0, deltaTag = d > 0 ? `<span class="rank-delta up">▲${d}</span>` : d < 0 ? `<span class="rank-delta dn">▼${Math.abs(d)}</span>` : "";
+          const ptsShown = sortBy === "week" ? r.weeklyPts : r.points;
+          return `<div class="lb-row ${r.usernameKey === u.usernameKey ? "me" : ""}" data-lb-key="${esc(r.usernameKey)}" onclick="openPlayerStatsModal('${esc(r.usernameKey)}')">
+            <div class="mono" style="font-weight:900;">#${i + 1}</div>
+            <div class="flex-row">${avatarHtml(r, 42, changedAvatars.has(r.usernameKey))}<div><strong>${lastWeekKing === r.usernameKey ? "👑 " : ""}${esc(r.name)}</strong>${titleHtml(r.title)} ${deltaTag}<div class="muted" style="font-size:0.76rem;">${getGrade(r.acc)} (${r.acc !== null ? r.acc.toFixed(1).replace(/\.0$/,"") + "%" : "--%"}) • 🔥 ${r.streak || 0}d</div></div></div>
+            <div class="mono"><strong>${(ptsShown || 0).toLocaleString()}</strong></div>
+          </div>`;
+        }).join("")}
+      </div>`;
+    }
+
+    render();
+    if (hasDb()) {
+      if (activeUser) saveUser();
+      pullLeaderboard();
+      setInterval(pullLeaderboard, 5000);
+    }
+  </script>
+</body>
+</html>
