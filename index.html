@@ -2531,8 +2531,11 @@ const flameLen = (boosting ? 1.65 : 0.78) + Math.sin(time * 55 + this.pos.x) * 0
       for (const m of missiles) scene.remove(m.mesh); missiles.length = 0;
       for (const b of bombs) scene.remove(b.mesh); bombs.length = 0;
       for (const bul of bullets) bul.active = false;
-      bombTargetRing.visible = false;
+           bombTargetRing.visible = false;
+      lockReticle.style.display = 'none';
+      leadPip.style.display = 'none';
       document.getElementById('kill-feed').innerHTML = ''; document.getElementById('active-buffs').innerHTML = '';
+
     }
 
     function getSkillMult() { return matchState.difficulty === 'cadet' ? 0.65 : (matchState.difficulty === 'legend' ? 1.22 : 0.92); }
@@ -3381,55 +3384,25 @@ function resumeMatch() { if (matchState.state !== 'PAUSED') return; document.get
     });
 
     document.getElementById('btn-hub-launch').addEventListener('click', () => { AudioSys.playClick(); startTakeoffSequence(); });
+    document.getElementById('btn-hub-leave').addEventListener('click', () => { AudioSys.playClick(); setupMenuBackdrop(); });
+
+    document.getElementById('btn-resume').addEventListener('click', resumeMatch);
+    document.getElementById('btn-cashout').addEventListener('click', () => {
+      AudioSys.playClick();
+      document.getElementById('pause-modal').classList.remove('open');
+      endMatch(false);
+      document.getElementById('end-title').textContent = 'CASHED OUT!';
+      document.getElementById('end-title').style.color = '#3ee0ff';
+      document.getElementById('end-subtitle').textContent = 'All kill & objective Sky Points saved!';
+    });
+    document.getElementById('btn-restart').addEventListener('click', () => { AudioSys.playClick(); startMatch(matchState.mode); });
+    document.getElementById('btn-pause-settings').addEventListener('click', () => openSettings('pause'));
+    document.getElementById('btn-quit').addEventListener('click', () => { AudioSys.playClick(); setupMenuBackdrop(); });
+
     function safeAddListener(id, event, fn) {
       const el = document.getElementById(id);
       if (el) el.addEventListener(event, fn);
     }
-  safeAddListener('btn-acc-create', 'click', async () => {
-      AudioSys.init();
-      const u = document.getElementById('acc-username').value.trim();
-      const pw = document.getElementById('acc-password').value.trim();
-      const msg = document.getElementById('acc-msg');
-      if (!u || pw.length < 3) {
-        AudioSys.playClick();
-        msg.style.color = '#ff5757';
-        msg.textContent = 'Enter a username and password (3+ chars)!';
-        return;
-      }
-      const map = getAccountsMap();
-      const key = u.toLowerCase();
-      if (map[key]) {
-        msg.style.color = '#ff5757';
-        msg.textContent = 'Account already exists! Click LOG IN.';
-        return;
-      }
-      map[key] = { username: u, passHash: hashPassword(pw) };
-      setAccountsMap(map);
-      AudioSys.playPurchase();
-      msg.textContent = '';
-      await switchActiveAccount(u, document.getElementById('acc-stay-logged').checked);
-      document.getElementById('account-modal').classList.remove('open');
-    });
-
-    safeAddListener('btn-acc-login', 'click', async () => {
-      AudioSys.init();
-      const u = document.getElementById('acc-username').value.trim();
-      const pw = document.getElementById('acc-password').value.trim();
-      const msg = document.getElementById('acc-msg');
-      const map = getAccountsMap();
-      const rec = map[u.toLowerCase()];
-      if (!rec || rec.passHash !== hashPassword(pw)) {
-        AudioSys.playClick();
-        msg.style.color = '#ff5757';
-        msg.textContent = 'Invalid username or password!';
-        return;
-      }
-      AudioSys.playClick();
-      msg.textContent = '';
-      await switchActiveAccount(rec.username, document.getElementById('acc-stay-logged').checked);
-      document.getElementById('account-modal').classList.remove('open');
-    });
-
     safeAddListener('set-master-vol', 'input', (e) => {
       const v = parseFloat(e.target.value); saveData.settings.masterVol = v;
       document.getElementById('lbl-master-vol').textContent = `${Math.round(v * 100)}%`;
