@@ -3310,23 +3310,29 @@ function resumeMatch() { if (matchState.state !== 'PAUSED') return; document.get
         : `Logged in as: ${currentAccount} (Auto-Saving Progress & Sound Pack)`;
     }
 
-    async function switchActiveAccount(username, stayLogged) {
+ async function switchActiveAccount(username, stayLogged) {
       currentAccount = username;
       try {
         sessionStorage.setItem(SESSION_KEY, username);
-        if (stayLogged) localStorage.setItem(SESSION_KEY, username); else localStorage.removeItem(SESSION_KEY);
+        if (stayLogged) localStorage.setItem(SESSION_KEY, username);
+        else localStorage.removeItem(SESSION_KEY);
       } catch {}
       saveData = loadSaveForUser(username);
       if (username !== 'Guest') saveData.pilotName = username;
       writeSave();
-      renderer.shadowMap.enabled = saveData.settings.highGfx; sunLight.castShadow = saveData.settings.highGfx;
+      renderer.shadowMap.enabled = saveData.settings.highGfx;
+      sunLight.castShadow = saveData.settings.highGfx;
       buildWorldMap(saveData.settings.map || 'sanctuary');
-      refreshCareerUI(); syncSettingsUI(); updateAccountUI();
-      refreshPlanePickerUI(); renderMenuQuickCosmetics(); rebuildMenuHeroStage(); snapCameraToState();
+      refreshCareerUI();
+      syncSettingsUI();
+      updateAccountUI();
+      refreshPlanePickerUI();
+      renderMenuQuickCosmetics();
+      rebuildMenuHeroStage();
+      snapCameraToState();
       await AudioSys.loadPersistedPack(username);
       AudioSys.refreshVolumesLive();
     }
-
     function openHangarModal(tabName = null) {
       AudioSys.init(); AudioSys.playClick(); syncPointerLock(false);
       hangarPreview = { ...saveData.equipped }; previewSelectedItem = null;
@@ -3379,25 +3385,49 @@ function resumeMatch() { if (matchState.state !== 'PAUSED') return; document.get
       const el = document.getElementById(id);
       if (el) el.addEventListener(event, fn);
     }
-
-    safeAddListener('btn-hub-leave', 'click', () => { AudioSys.playClick(); setupMenuBackdrop(); });
-    safeAddListener('btn-resume', 'click', resumeMatch);
-    safeAddListener('btn-restart', 'click', () => { AudioSys.playClick(); startMatch(matchState.mode); });
-    safeAddListener('btn-pause-settings', 'click', () => openSettings('pause'));
-    safeAddListener('btn-quit', 'click', () => {
-      AudioSys.playClick();
-      if (playerPlane) {
-        const s = playerPlane.score + playerPlane.kills * 150;
-        if (s > saveData.highScore) saveData.highScore = s;
-        writeSave(); refreshCareerUI();
+  safeAddListener('btn-acc-create', 'click', async () => {
+      AudioSys.init();
+      const u = document.getElementById('acc-username').value.trim();
+      const pw = document.getElementById('acc-password').value.trim();
+      const msg = document.getElementById('acc-msg');
+      if (!u || pw.length < 3) {
+        AudioSys.playClick();
+        msg.style.color = '#ff5757';
+        msg.textContent = 'Enter a username and password (3+ chars)!';
+        return;
       }
-      setupMenuBackdrop();
+      const map = getAccountsMap();
+      const key = u.toLowerCase();
+      if (map[key]) {
+        msg.style.color = '#ff5757';
+        msg.textContent = 'Account already exists! Click LOG IN.';
+        return;
+      }
+      map[key] = { username: u, passHash: hashPassword(pw) };
+      setAccountsMap(map);
+      AudioSys.playPurchase();
+      msg.textContent = '';
+      await switchActiveAccount(u, document.getElementById('acc-stay-logged').checked);
+      document.getElementById('account-modal').classList.remove('open');
     });
 
-    safeAddListener('btn-cashout', 'click', () => {
+    safeAddListener('btn-acc-login', 'click', async () => {
+      AudioSys.init();
+      const u = document.getElementById('acc-username').value.trim();
+      const pw = document.getElementById('acc-password').value.trim();
+      const msg = document.getElementById('acc-msg');
+      const map = getAccountsMap();
+      const rec = map[u.toLowerCase()];
+      if (!rec || rec.passHash !== hashPassword(pw)) {
+        AudioSys.playClick();
+        msg.style.color = '#ff5757';
+        msg.textContent = 'Invalid username or password!';
+        return;
+      }
       AudioSys.playClick();
-      document.getElementById('pause-modal').classList.remove('open');
-      endMatch(true);
+      msg.textContent = '';
+      await switchActiveAccount(rec.username, document.getElementById('acc-stay-logged').checked);
+      document.getElementById('account-modal').classList.remove('open');
     });
 
     safeAddListener('set-master-vol', 'input', (e) => {
